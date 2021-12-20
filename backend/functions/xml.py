@@ -22,9 +22,6 @@ child41.text = '458'
 child42 = etree.SubElement(child4, 'height')
 child42.text = '45'
 
-child43 = etree.SubElement(child4, 'height')
-child43.text = '45'
-
 child5 = etree.SubElement(root, 'segmented')
 child5.text = '0'
 # 自定义数据集
@@ -34,9 +31,6 @@ for i in range(0, 3):
     objectlist.append(dic)
 print(objectlist)
 
-# objectlist = [{'xmin': 263, 'ymin': 211, 'xmax': 324, 'ymax': 339},
-#               {'xmin': 5, 'ymin': 224, 'xmax': 67, 'ymax': 374}]
-# print(objectlist)
 
 for i in objectlist:
     child6 = etree.SubElement(root, 'object')

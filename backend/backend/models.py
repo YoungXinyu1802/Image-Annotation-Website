@@ -16,7 +16,5 @@ class User(models.Model):
     def __unicode__(self):
         return 'Name: ' + self.user_name + ',UID: ' + self.UID
 
-class Goods(models.Model):
-    name = models.CharField(primary_key=True, max_length=20)
-    price = models.FloatField()
-    image = models.CharField(max_length=100)
+# class Label(models.Model):
+#     folder = models.CharField()

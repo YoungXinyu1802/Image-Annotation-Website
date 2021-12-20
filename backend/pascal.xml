@@ -1,0 +1,24 @@
+<annotion>
+  <folder>VOCtype</folder>
+  <filename>000001.jpg</filename>
+  <source>
+    <database>VOC</database>
+  </source>
+  <size>
+    <width>1200</width>
+    <height>801</height>
+  </size>
+  <segmented>0</segmented>
+  <object>
+    <name>bee</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+      <xmin>384</xmin>
+      <ymin>120</ymin>
+      <xmax>936</xmax>
+      <ymax>617</ymax>
+    </bndbox>
+  </object>
+</annotion>
