@@ -13,7 +13,7 @@
           <div slot="header" class="title">合成区域</div>
           <div class="box-wrapper">
             <div class="drag-container">
-              <video :src="videoSrc" controls />
+              <video :src="videoSrc" controls/>
               <ElementDrr
                 v-for="(item, index) in elements"
                 :key="index"
@@ -25,7 +25,8 @@
                 <!-- 图片 -->
                 <img v-if="item.type==='image'" :src="item.src" draggable="false">
                 <!-- 文字 -->
-                <ImageRichText v-if="item.type === 'text'" v-model="item.text" :element="item" :active-ele-text="activeEleText" />
+                <ImageRichText v-if="item.type === 'text'" v-model="item.text" :element="item"
+                               :active-ele-text="activeEleText"/>
               </ElementDrr>
             </div>
           </div>
@@ -34,20 +35,35 @@
       <el-col :span="8">
         <el-card shadow="always">
           <div slot="header" class="title">设置区域</div>
-          <div class="box-content">
-            <el-form class="form-wrapper" label-width="70px">
-              <el-form-item label="添加文本">
-                <el-button @click="addText">添加文本</el-button>
-              </el-form-item>
-              <el-form-item label="添加图片">
-                <UploadImage @on-success="handleAddImage" />
-              </el-form-item>
-              <el-form-item label="删除元素">
-                <el-button type="danger" @click="deleteActiveEle">删除元素</el-button>
-              </el-form-item>
-            </el-form>
-            <TextSetting v-if="activeEle.type === 'text'" :active-ele-text="activeEleText" />
-          </div>
+<!--          <div class="box-content">-->
+<!--            <el-form class="form-wrapper" label-width="70px">-->
+<!--              <el-form-item label="添加文本">-->
+<!--                <el-button @click="addText">添加文本</el-button>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="添加图片">-->
+<!--                <UploadImage @on-success="handleAddImage"/>-->
+<!--              </el-form-item>-->
+<!--              <el-form-item label="删除元素">-->
+<!--                <el-button type="danger" @click="deleteActiveEle">删除元素</el-button>-->
+<!--              </el-form-item>-->
+<!--            </el-form>-->
+<!--            <TextSetting v-if="activeEle.type === 'text'" :active-ele-text="activeEleText"/>-->
+<!--          </div>-->
+        <div>
+            <el-button @click="cutPicture">
+                截图
+            </el-button>
+        </div>
+        <canvas id="myCanvas" width="343" height="200"></canvas>
+      <div class="box">
+        <ul class = 'ul'>
+          <li v-for="(item, i) in imgSrc" class = 'li'>
+            <img v-bind:src="item" alt="" class = img>
+          </li>
+        </ul>
+	    </div>
+
+
         </el-card>
       </el-col>
     </el-row>
@@ -60,17 +76,19 @@ import ElementDrr from '../../components/ElementDrr'
 import ImageRichText from '../../components/ImageRichText'
 import TextSetting from '../../components/TextSetting'
 import UploadImage from '../../components/UploadImage'
-import { calcImageSize } from '../../utils'
+import {calcImageSize} from '../../utils'
 
 export default {
   name: 'VideoMark',
-  components: { Hints, ElementDrr, ImageRichText, TextSetting, UploadImage },
+  components: {Hints, ElementDrr, ImageRichText, TextSetting, UploadImage},
   data() {
     return {
-      videoSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/videos/houlang.mp4',
+      // videoSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/videos/houlang.mp4',
+      videoSrc: require("../../assets/video/video.mp4"),
       elements: [], // 叠加组件数组
       activeEle: {}, // 当前图片上聚焦的叠加组件
-      eleNum: 0
+      eleNum: 0,
+      imgSrc: []
     }
   },
   computed: {
@@ -196,7 +214,18 @@ export default {
         this.elements = newElements
       })
       this.updateActiveEle({})
-    }
+    },
+    cutPicture() {
+      let self = this;
+      var v = document.querySelector("video");
+      let canvas = document.getElementById('myCanvas')
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(v, 0, 0, 343, 200);
+      var oGrayImg = canvas.toDataURL('image/jpeg');
+      // this.imgSrc = oGrayImg
+      this.imgSrc.push(oGrayImg)
+    },
+
   }
 }
 </script>
@@ -209,10 +238,12 @@ export default {
     justify-content: center;
     height: 550px;
     overflow: hidden;
+
     .drag-container {
       position: relative;
       width: 850px;
       height: 478px;
+
       video {
         position: absolute;
         top: 0;
@@ -220,24 +251,48 @@ export default {
         width: 100%;
         height: 100%;
       }
+
       .z-drr-container {
         border: 1px dashed transparent;
+
         &.z-active {
           border: 1px dashed #2e95ff;
         }
       }
     }
   }
+
   .box-content {
     height: 550px;
     overflow: hidden;
+
     .form-wrapper {
       width: 300px;
       margin: 50px auto 0;
     }
+
     .el-button {
       width: 210px;
     }
   }
+  .box{
+    //margin-top: 10px;
+    .ul{
+      display: flex;
+      flex-wrap: wrap;
+      position: relative;
+      margin-top: 10px
+    }
+    .li{
+      padding: 3px;
+      list-style: none;
+      margin-right: 15px;
+    }
+    .img{
+      width: 200px;
+      height: 150px
+    }
+  }
+
 }
 </style>
