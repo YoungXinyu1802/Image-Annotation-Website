@@ -1,9 +1,12 @@
 from django.views.decorators.csrf import csrf_exempt
 from .import models
+import base64
+import time
 from django.http import JsonResponse
 from lxml import etree
 from django.core import signing
 import os
+from pathlib import Path
 # from models import User
 # from models import Goods
 
@@ -184,3 +187,31 @@ def upload(request):
         }
         )
     return ok(img_list)
+
+MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/upload_file/uploads')
+@csrf_exempt
+def video2img(request):
+    imgsrc = request.POST.getlist("imgSrc")
+    print(len(imgsrc))
+    username = request.POST.get("username")
+    print(username)
+
+    index = 0
+    for img in imgsrc:
+        # print(img)
+        image = img.split(",")
+        result = image[1]
+        image_data = base64.b64decode(result)
+        image_name = str(int(time.strftime("%Y%m%d%H%M%S"))) + '_' + str(index)
+        image_url = os.path.join(MEDIA_ROOT, '%s.jpg' % image_name).replace(
+            '\\', '/')
+        print(image_url)
+        myfile = Path(image_url)
+        myfile.touch(exist_ok=True)
+        with open(image_url, 'wb') as f:
+            f.write(image_data)  # 打开路径将结果写入到文件中
+        new_img = models.LabelImg(img=image_url, user_id=username)
+        new_img.save()
+        index += 1
+
+    return ok(imgsrc)
