@@ -2,10 +2,13 @@ from django.views.decorators.csrf import csrf_exempt
 from .import models
 from django.http import JsonResponse
 from lxml import etree
+from django.core import signing
 import os
 # from models import User
 # from models import Goods
 
+def ok(data: object):
+    return JsonResponse({'code': 20000, 'message': '操作成功', 'data': data})
 
 @csrf_exempt
 def login(request):
@@ -155,6 +158,29 @@ def label(request):
     print(_tags)
     info = 'yes'
     toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags)
-
-
     return JsonResponse({'request': info})
+
+@csrf_exempt
+def upload(request):
+    print('get')
+    # token = signing.loads((request.META.get('HTTP_ANNOTATE_SYSTEM_TOKEN')))
+    # print(token)
+    print('get id')
+    username = request.POST.get("username")
+    print(username)
+    # user_id = token['id']
+    file=request.FILES.get("file")
+    print(file)
+    new_img = models.LabelImg(img=file, user_id=username)
+    new_img.save()
+
+    img_list = []
+    for img in models.LabelImg.objects.filter(user_id=username):
+        img_list.append({
+            "id": img.id,
+            "text": img.img.name,
+            "status": img.status,
+            "description": img.description
+        }
+        )
+    return ok(img_list)

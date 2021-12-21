@@ -122,6 +122,7 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
     'Pragma',
+    'annotate-system-token'
 )
 
 WSGI_APPLICATION = 'ImageAnnotation.wsgi.application'

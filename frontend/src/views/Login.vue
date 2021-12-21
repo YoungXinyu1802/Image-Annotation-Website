@@ -82,6 +82,9 @@ export default {
                 login(data).then(res => {
                   _this.loading = false
                   setToken(res.token)
+                  localStorage.setItem('username', _this.loginForm.username)
+                  localStorage.setItem('password', _this.loginForm.password)
+                  console.log(localStorage.getItem('username'))
                   _this.$router.push({ path: _this.redirect || '/' })
                 }).catch(() => {
                   _this.loading = false

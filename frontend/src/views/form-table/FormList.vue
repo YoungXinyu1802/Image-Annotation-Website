@@ -7,110 +7,112 @@
         <p>地址：访问 <el-link type="success" href="https://element.eleme.cn/2.13/#/zh-CN/component/form" target="_blank">element-Form</el-link></p>
       </template>
     </Hints>
+    <el-card shadow="always" class = "el-card">
+      <div slot="header" class="el-card-header">
+        <h2 class="login-title">任务信息</h2>
+      </div>
+    <el-form ref="form" :model="task" label-width="80px">
+      <el-form-item label="任务名称">
+        <el-input
+          v-model="task.name"
+          maxlength="10"
+          show-word-limit
+          class = "el-input"
+        >
+        </el-input>
+      </el-form-item>
+      <el-form-item label="标注标签">
+        <el-tag
+          :key="tag"
+          v-for="tag in task.dynamicTags"
+          closable
+          :disable-transitions="false"
+          @close="handleClose(tag)">
+          {{tag}}
+        </el-tag>
+        <el-input
+          class="input-new-tag"
+          v-if="inputVisible"
+          v-model="inputValue"
+          ref="saveTagInput"
+          size="small"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        >
+        </el-input>
+        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+      </el-form-item>
+      <el-form-item label="文件类型">
+        <el-radio-group v-model="task.resource">
+          <el-radio label="图片"></el-radio>
+          <el-radio label="视频"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="任务描述">
+        <el-input
+          type="textarea"
+          v-model="task.desc"
+          class = "el-input"
+        >
+        </el-input>
+      </el-form-item>
+<!--      <el-form-item label="商品图片">-->
+<!--        <input type="file" @change="getImageFile" id="img">-->
+<!--      </el-form-item>-->
+
+      <el-form-item>
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
+    </el-form>
+    </el-card>
+
     <el-card shadow="always">
-      <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="230px" class="form-list">
-        <el-form-item label="输入框（长度限制）：" prop="inputLimit">
-          <el-input v-model="ruleForm.inputLimit" maxlength="15" show-word-limit placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="纯数字（纯数字）：" prop="inputNum">
-          <el-input v-model.number="ruleForm.inputNum" maxlength="11" placeholder="请输入数字" />
-        </el-form-item>
-        <el-form-item label="输入框（密码隐藏）：" prop="password">
-          <el-input v-model="ruleForm.password" placeholder="请输入密码" maxlength="16" show-password />
-        </el-form-item>
-        <el-form-item label="select选择器（自定义）：" required>
-          <el-col :span="10">
-            <el-form-item prop="select1">
-              <el-select v-model="ruleForm.select1" placeholder="请选择">
-                <el-option v-for="item in selectData" :key="item.value" :label="item.label" :value="item.value">
-                  <span style="float: left">{{ item.label }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col class="tip-title" :span="4">（可搜索）</el-col>
-          <el-col :span="10">
-            <el-form-item prop="select2">
-              <el-select v-model="ruleForm.select2" filterable placeholder="请选择或输入">
-                <el-option v-for="item in selectData" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="日期和时间选择器：" required>
-          <el-col :span="11">
-            <el-form-item prop="dateVal">
-              <el-date-picker v-model="ruleForm.dateVal" type="date" placeholder="选择日期" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
-          <el-col class="line" :span="2">-</el-col>
-          <el-col :span="11">
-            <el-form-item prop="timeVal">
-              <el-time-picker v-model="ruleForm.timeVal" placeholder="选择时间" style="width: 100%;" />
-            </el-form-item>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="switch开关（隐藏下面表单）：" prop="switch">
-          <el-switch v-model="ruleForm.switch" />
-        </el-form-item>
-        <div v-if="ruleForm.switch">
-          <el-form-item label="滑块条（初始值）：" prop="slider">
-            <el-slider v-model="ruleForm.slider" />
-          </el-form-item>
-          <el-form-item label="级联选择器（自定义）：">
-            <el-col :span="10">
-              <el-form-item prop="cascader1">
-                <el-cascader v-model="ruleForm.cascader1" :options="cascaderData" :props="{ expandTrigger: 'hover' }">
-                  <template slot-scope="{ node, data }">
-                    <span>{{ data.label }}</span>
-                    <span v-if="!node.isLeaf">({{ data.children.length }})</span>
-                  </template>
-                </el-cascader>
-              </el-form-item>
-            </el-col>
-            <el-col class="tip-title" :span="4">（懒加载）</el-col>
-            <el-col :span="10">
-              <el-form-item prop="cascader2">
-                <el-cascader v-model="ruleForm.cascader2" :props="customProps" />
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="单选框（带禁止）：" prop="radio">
-            <el-radio-group v-model="ruleForm.radio">
-              <el-radio label="免费" />
-              <el-radio label="收费" />
-              <el-radio label="赞助" />
-              <el-radio label="线上" disabled />
-              <el-radio label="线下" disabled />
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="多选框（带禁止）：" prop="checkbox">
-            <el-checkbox-group v-model="ruleForm.checkbox">
-              <el-checkbox label="游泳" />
-              <el-checkbox label="跑步" />
-              <el-checkbox label="健身" />
-              <el-checkbox label="阅读" />
-              <el-checkbox label="电影" disabled />
-              <el-checkbox label="音乐" disabled />
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="文本域（长度限制）：" prop="content">
-            <el-input
-              v-model="ruleForm.content"
-              type="textarea"
-              :autosize="{ minRows: 3, maxRows: 5 }"
-              placeholder="请输入内容"
-              maxlength="50"
-              show-word-limit
-            />
-          </el-form-item>
-        </div>
-        <el-form-item class="submit-box">
-          <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
-        </el-form-item>
-      </el-form>
+      <div slot="header" class="el-card-header">
+        <h2 class="login-title">上传图片</h2>
+      </div>
+      <el-upload
+        name = 'file'
+        action="http://127.0.0.1:8000/api/upload"
+        :data="{username:this.username}"
+        list-type="picture-card"
+        :before-upload="beforeAvatarUpload"
+        multiple
+      >
+          <i slot="default" class="el-icon-plus"></i>
+          <div slot="file" slot-scope="{file}">
+            <img
+              class="el-upload-list__item-thumbnail"
+              :src="file.url" alt=""
+            >
+            <span class="el-upload-list__item-actions">
+              <span
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(file)"
+              >
+                <i class="el-icon-zoom-in"></i>
+              </span>
+              <span
+                v-if="!disabled"
+                class="el-upload-list__item-delete"
+                @click="handleDownload(file)"
+              >
+                <i class="el-icon-download"></i>
+              </span>
+              <span
+                v-if="!disabled"
+                class="el-upload-list__item-delete"
+                @click="handleRemove(file)"
+              >
+                <i class="el-icon-delete"></i>
+              </span>
+            </span>
+          </div>
+      </el-upload>
+      <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
+
     </el-card>
   </div>
 </template>
@@ -122,116 +124,152 @@ import { selectData, cascaderData } from './data'
 export default {
   name: 'Form',
   components: { Hints },
-  data() {
-    return {
-      ruleForm: {
-        inputLimit: '',
-        inputNum: '',
-        select1: '',
-        select2: '',
-        dateVal: '',
-        timeVal: '',
-        switch: true,
-        slider: 32,
-        cascader1: [],
-        cascader2: [],
-        radio: '线下',
-        checkbox: ['音乐'],
-        content: ''
-      },
-      selectData,
-      cascaderData,
-      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      customProps: {
-        lazy: true,
-        lazyLoad(node, resolve) {
-          let id = 0
-          const { level } = node
-          setTimeout(() => {
-            const nodes = Array.from({ length: level + 1 })
-              .map(item => ({
-                value: ++id,
-                label: `选项${id}`,
-                leaf: level >= 2
-              }))
-            // 通过调用resolve将子节点数据返回，通知组件数据加载完成
-            resolve(nodes)
-          }, 1000)
-        }
-      },
-      rules: {
-        inputLimit: [
-          { required: true, message: '内容不能为空', trigger: 'blur' }
-        ],
-        inputNum: [
-          { required: true, message: '内容不能为空', trigger: 'blur' },
-          { type: 'number', message: '内容必须为数字值', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '内容不能为空', trigger: 'blur' },
-          { min: 6, max: 16, message: '密码长度在 6 到 16 个字符', trigger: ['blur', 'change'] },
-          { pattern: /^[a-zA-Z0-9_-]{6,16}$/, message: '密码只支持字母、数字和下划线', trigger: ['blur', 'change'] }
-        ],
-        select1: [
-          { required: true, message: '请选择', trigger: 'change' }
-        ],
-        select2: [
-          { required: true, message: '请选择', trigger: 'change' }
-        ],
-        dateVal: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        timeVal: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        ]
+    data() {
+      return {
+        task: {
+          name: '',
+          type: [],
+          dynamicTags: ['标签一', '标签二', '标签三'],
+          resource: '',
+          desc: '',
+        },
+        username: localStorage.getItem('username'),
+
+        inputVisible: false,
+        inputValue: '',
+
+        dialogImageUrl: '',
+        dialogVisible: false,
+        disabled: false,
+
+        fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
       }
-    }
-  },
-  methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          // 此处添加后端接口
-          alert('提交成功!')
-        } else {
-          console.log('提交失败!')
-          return false
-        }
-      })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    }
+    methods: {
+      onSubmit() {
+        console.log('submit!');
+        // let newTask = new FormData();
+        // newTask.append('name', this.task.name);
+        // newTask.append('type', this.task.type);
+        // newTask.append('dynamicTags', this.task.dynamicTags);
+        // newTask.append('resource', this.task.resource);
+        // newTask.append('imgs', this.task.imgs);
+        let newTask = {
+          name: '',
+          type: [],
+          dynamicTags: ['标签一', '标签二', '标签三'],
+          resource: '',
+          desc: '',
+          imgs: '',
+        };
+        newTask.type = this.task.type;
+        newTask.dynamicTags = this.task.dynamicTags;
+        newTask.resource = this.task.resource;
+        newTask.imgs = this.task.imgs;
+
+
+        console.log(newTask);
+        console.log(this.task.name)
+      },
+
+      getImageFile:function(e) {
+        let file = e.target.files[0];
+        this.task.imgs=file;
+      },
+
+      handleClose(tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.dynamicTags.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+      handleRemove(file) {
+          console.log(file);
+      },
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+
+
+      handleDownload(file) {
+        console.log(file);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+      handlePreview(file) {
+        console.log(file);
+      }
+    },
   }
-}
 </script>
 
 <style lang="less">
 .form-list-wrapper {
+  .el-card{
+  position: relative;
+  margin-top:  10px;
+  //left: 15%;
+  //width: 70%;
+  .el-card-header{
+    height: 40px;
+  }
+}
+
   .el-card {
     padding-top: 20px;
   }
-  .form-list {
-    width: 45%;
-    margin: 0 auto;
-    .el-rate {
-      line-height: 2;
-    }
-    > .el-form-item {
-      margin-bottom: 22px;
-      .line {
-        text-align: center;
-      }
-      .tip-title {
-        text-align: right;
-        color: #606266;
-      }
-    }
-    .submit-box {
-      margin-top: 35px;
-      margin-left: 0;
-      text-align: center;
-    }
+  .el-input {
+    width: 80%
   }
+
+  //.form-list {
+  //  width: 45%;
+  //  margin: 0 auto;
+  //  .el-rate {
+  //    line-height: 2;
+  //  }
+  //  > .el-form-item {
+  //    margin-bottom: 22px;
+  //    .line {
+  //      text-align: center;
+  //    }
+  //    .tip-title {
+  //      text-align: right;
+  //      color: #606266;
+  //    }
+  //  }
+  //  .submit-box {
+  //    margin-top: 35px;
+  //    margin-left: 0;
+  //    text-align: center;
+  //  }
+  //}
 }
+
+
+
 </style>

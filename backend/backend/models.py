@@ -16,5 +16,11 @@ class User(models.Model):
     def __unicode__(self):
         return 'Name: ' + self.user_name + ',UID: ' + self.UID
 
-# class Label(models.Model):
-#     folder = models.CharField()
+class LabelImg(models.Model):
+    img = models.ImageField(upload_to='uploads/', max_length=1000)
+    description = models.TextField(max_length=1000, default="NULL")
+    status = models.CharField(max_length=20, default="未标注")
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.text
