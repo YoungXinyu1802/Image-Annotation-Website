@@ -20,15 +20,26 @@ class UserInfo(models.Model):
     def __str__(self):
         return self.user_name
 
-class LabelImg(models.Model):
+class Task(models.Model):
     publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
-    claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
-    # img = models.ImageField(upload_to='uploads/', max_length=1000)
-    description = models.TextField(max_length=1000, default="NULL")
-    status = models.CharField(max_length=20, default="未标注")
     task_name = models.CharField(max_length=20, default="NULL")
+    description = models.TextField(max_length=1000, default="NULL")
+    claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
+    status = models.CharField(max_length=20, default="未领取")
+
+
+class LabelImg(models.Model):
+    # publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
+    # claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
+    # img = models.ImageField(upload_to='uploads/', max_length=1000)
+    # description = models.TextField(max_length=1000, default="NULL")
+    status = models.CharField(max_length=20, default="未标注")
+    task_name = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, related_name='img_task')
     img = models.ImageField(upload_to=MEDIA_ROOT +  '/img/', max_length=1000)
 
 
     # def __str__(self):
     #     return self.img.name
+
+
+

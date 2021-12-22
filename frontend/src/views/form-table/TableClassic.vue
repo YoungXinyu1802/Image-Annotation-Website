@@ -53,23 +53,13 @@
       >
         <el-table-column type="selection" width="60" />
         <el-table-column prop="id" label="编号" align="center" width="120" sortable />
-        <el-table-column prop="user_id" label="姓名" align="center">
+        <el-table-column prop="publish_user_id" label="发布者" align="center">
         </el-table-column>
         <el-table-column label="性别" align="center">
           <template slot-scope="scope">{{ scope.row.sex }}</template>
         </el-table-column>
         <el-table-column prop="phone" label="手机" align="center" />
         <el-table-column prop="education" label="学历" align="center" />
-        <el-table-column label="婚姻状况" align="center" width="100">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.married" style="width: 80px" @change="selectChange(scope.row)">
-              <el-option :value="0" label="单身" />
-              <el-option :value="1" label="未婚" />
-              <el-option :value="2" label="已婚" />
-              <el-option :value="3" label="离异" />
-            </el-select>
-          </template>
-        </el-table-column>
         <el-table-column label="禁止编辑" align="center">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.forbid" @change="stateChange(scope.row)" />
@@ -272,7 +262,15 @@ export default {
     fetchData() {
       this.listLoading = true
       // 获取数据列表接口
-      getTableList(this.listQuery).then(res => {
+      let username = localStorage.getItem('username')
+      console.log(username)
+
+      let parm = Qs.stringify({'user_name': localStorage.getItem('username')})
+
+      console.log(parm)
+
+
+      getTableList(Qs.stringify({'username': localStorage.getItem('username')})).then(res => {
         const data = res.data
         console.log(data)
         if (data.code === 0) {

@@ -21,33 +21,33 @@
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="标注标签">
-        <el-tag
-          :key="tag"
-          v-for="tag in task.dynamicTags"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)">
-          {{tag}}
-        </el-tag>
-        <el-input
-          class="input-new-tag"
-          v-if="inputVisible"
-          v-model="inputValue"
-          ref="saveTagInput"
-          size="small"
-          @keyup.enter.native="handleInputConfirm"
-          @blur="handleInputConfirm"
-        >
-        </el-input>
-        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
-      </el-form-item>
-      <el-form-item label="文件类型">
-        <el-radio-group v-model="task.resource">
-          <el-radio label="图片"></el-radio>
-          <el-radio label="视频"></el-radio>
-        </el-radio-group>
-      </el-form-item>
+<!--      <el-form-item label="标注标签">-->
+<!--        <el-tag-->
+<!--          :key="tag"-->
+<!--          v-for="tag in task.dynamicTags"-->
+<!--          closable-->
+<!--          :disable-transitions="false"-->
+<!--          @close="handleClose(tag)">-->
+<!--          {{tag}}-->
+<!--        </el-tag>-->
+<!--        <el-input-->
+<!--          class="input-new-tag"-->
+<!--          v-if="inputVisible"-->
+<!--          v-model="inputValue"-->
+<!--          ref="saveTagInput"-->
+<!--          size="small"-->
+<!--          @keyup.enter.native="handleInputConfirm"-->
+<!--          @blur="handleInputConfirm"-->
+<!--        >-->
+<!--        </el-input>-->
+<!--        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="文件类型">-->
+<!--        <el-radio-group v-model="task.resource">-->
+<!--          <el-radio label="图片"></el-radio>-->
+<!--          <el-radio label="视频"></el-radio>-->
+<!--        </el-radio-group>-->
+<!--      </el-form-item>-->
       <el-form-item label="任务描述">
         <el-input
           type="textarea"
@@ -120,6 +120,8 @@
 <script>
 import Hints from '../../components/Hints'
 import { selectData, cascaderData } from './data'
+import axios from 'axios'
+import Qs from 'qs'
 
 export default {
   name: 'Form',
@@ -166,6 +168,17 @@ export default {
         newTask.dynamicTags = this.task.dynamicTags;
         newTask.resource = this.task.resource;
         newTask.imgs = this.task.imgs;
+
+        let parm = Qs.stringify({
+          'username': this.username,
+          'taskname': this.task.name,
+          'desc': this.task.desc
+        })
+
+        axios.post('http://127.0.0.1:8000/api/createTask', parm).then(resp => {
+
+          }
+        )
 
 
         console.log(newTask);

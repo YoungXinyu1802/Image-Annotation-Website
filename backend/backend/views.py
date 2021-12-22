@@ -234,29 +234,30 @@ def video2img(request):
 @csrf_exempt
 def createTask(request):
     username = request.POST.get("username")
-    type = request.POST.get("type")
-    dynamicTags = request.POST.get("dynamicTags")
-    resource = request.POST.get("resource")
-    imgs = request.POST.get("imgs")
+    # dynamicTags = request.POST.get("dynamicTags")
+    taskname = request.POST.get("taskname")
+    desc = request.POST.get("desc")
+    # resource = request.POST.get("resource")
+    # imgs = request.POST.get("imgs")
     print(username)
-    print(type)
-    print(dynamicTags)
-    print(resource)
-    print(imgs)
+    # print(type)
+    # print(dynamicTags)
+    # print(resource)
+    # print(imgs)
 
-    task = models.LabelImg(publish_user_id = username)
+    task = models.Task(publish_user_id = username, task_name = taskname, description=desc)
     task.save()
-
 
     return ok(username)
 
 @csrf_exempt
 def getTasklist(request):
-    # username = ()
-    # data = models.LabelImg.objects.filter(user_id='yxy1802')
+    username = request.POST.get('username')
+    print(username)
+    data = models.Task.objects.all().values()
     # print(data)
-    data = models.LabelImg.objects.all().values()
-    print(data[0])
+    # data = models.Task.objects.filter(publish_user_id=username).values()
+    # print(data[0])
     contents = list(data)
     print(contents)
     print(ok(contents))
