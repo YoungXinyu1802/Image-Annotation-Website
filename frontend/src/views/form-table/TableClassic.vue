@@ -53,17 +53,7 @@
       >
         <el-table-column type="selection" width="60" />
         <el-table-column prop="id" label="编号" align="center" width="120" sortable />
-        <el-table-column prop="name" label="姓名" align="center">
-          <template slot-scope="scope">
-            <el-popover trigger="hover" placement="top">
-              <p>姓名: {{ scope.row.name }}</p>
-              <p>手机: {{ scope.row.phone }}</p>
-              <p>爱好: {{ scope.row.hobby }}</p>
-              <div slot="reference">
-                <el-tag size="medium">{{ scope.row.name }}</el-tag>
-              </div>
-            </el-popover>
-          </template>
+        <el-table-column prop="user_id" label="姓名" align="center">
         </el-table-column>
         <el-table-column label="性别" align="center">
           <template slot-scope="scope">{{ scope.row.sex }}</template>
@@ -115,27 +105,6 @@
           <el-form-item label="手机：" prop="phone">
             <el-input v-model="dialogForm.phone" />
           </el-form-item>
-          <el-form-item label="婚姻状况：" prop="married">
-            <el-select v-model="dialogForm.married">
-              <el-option :value="0" label="单身" />
-              <el-option :value="1" label="未婚" />
-              <el-option :value="2" label="已婚" />
-              <el-option :value="3" label="离异" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="爱好：" prop="hobby">
-            <el-checkbox-group v-model="dialogForm.hobby">
-              <el-checkbox label="羽毛球" name="hobby" />
-              <el-checkbox label="乒乓球" name="hobby" />
-              <el-checkbox label="篮球" name="hobby" />
-              <el-checkbox label="排球" name="hobby" />
-              <el-checkbox label="网球" name="hobby" />
-              <el-checkbox label="旱冰" name="hobby" />
-              <el-checkbox label="滑雪" name="hobby" />
-              <el-checkbox label="跳高" name="hobby" />
-              <el-checkbox label="冲浪" name="hobby" />
-            </el-checkbox-group>
-          </el-form-item>
           <div class="footer-item">
             <el-button @click="cancleForm">取 消</el-button>
             <el-button type="primary" :disabled="isSubmit" @click="submitForm('dialogForm')">确 定</el-button>
@@ -183,6 +152,9 @@ import excel from '../../utils/excel'
 import Pagination from '../../components/Pagination'
 import Upload from '../../components/Upload'
 import Hints from '../../components/Hints'
+import Qs from "qs";
+import axios from "axios";
+
 
 export default {
   name: 'Table',
@@ -302,9 +274,10 @@ export default {
       // 获取数据列表接口
       getTableList(this.listQuery).then(res => {
         const data = res.data
+        console.log(data)
         if (data.code === 0) {
-          this.total = data.data.total
-          this.tableData = data.data.list
+          // this.total = data.data.total
+          this.tableData = data.data
           this.listLoading = false
         }
       }).catch(() => {
@@ -353,7 +326,7 @@ export default {
       if (this.tableData.length) {
         const params = {
           header: ['编号', '姓名', '性别', '手机', '学历', '婚姻状况', '禁止编辑', '爱好'],
-          key: ['id', 'name', 'sex', 'phone', 'education', 'married', 'forbid', 'hobby'],
+          key: ['id', 'user_id', 'sex', 'phone', 'education', 'married', 'forbid', 'hobby'],
           data: this.tableData,
           autoWidth: true,
           fileName: '综合表格',

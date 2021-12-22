@@ -22,5 +22,5 @@ class LabelImg(models.Model):
     status = models.CharField(max_length=20, default="未标注")
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.text
+    # def __str__(self):
+    #     return self.img.name

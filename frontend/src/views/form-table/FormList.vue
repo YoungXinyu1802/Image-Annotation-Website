@@ -56,9 +56,6 @@
         >
         </el-input>
       </el-form-item>
-<!--      <el-form-item label="商品图片">-->
-<!--        <input type="file" @change="getImageFile" id="img">-->
-<!--      </el-form-item>-->
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -173,10 +170,6 @@ export default {
         console.log(this.task.name)
       },
 
-      getImageFile:function(e) {
-        let file = e.target.files[0];
-        this.task.imgs=file;
-      },
 
       handleClose(tag) {
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
