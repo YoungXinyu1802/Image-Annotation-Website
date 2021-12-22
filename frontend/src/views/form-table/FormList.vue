@@ -283,7 +283,7 @@ export default {
     width: 80%
   }
   .el-button{
-    postition: "relative";
+    position: relative;
     margin-top: 10px
   }
 

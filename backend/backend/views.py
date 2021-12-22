@@ -170,13 +170,14 @@ def upload(request):
     # print(token)
     print('get id')
     username = request.POST.get("username")
+    database = request.POST.get("database")
     print(username)
     # user_id = token['id']
     file=request.FILES.getlist("file")
     print(file)
 
     for f in file:
-        img_url = os.path.join(MEDIA_ROOT, username).replace('\\', '/')
+        img_url = os.path.join(MEDIA_ROOT, username, 'database', database).replace('\\', '/')
         print(img_url)
         print(os.path.exists(img_url))
         if not os.path.exists(img_url):
@@ -189,19 +190,19 @@ def upload(request):
             for chunk in f.chunks():
                 dest.write(chunk)
                 print('load')
-        new_img = models.LabelImg(img=_img_url, publish_user_id=username)
+        new_img = models.LabelImg(img=_img_url)
         new_img.save()
 
-    img_list = []
-    for img in models.LabelImg.objects.filter(publish_user_id=username):
-        img_list.append({
-            "id": img.id,
-            "text": img.img.name,
-            "status": img.status,
-            "description": img.description
-        }
-        )
-    return ok(img_list)
+    # img_list = []
+    # for img in models.LabelImg.objects.filter(publish_user_id=username):
+    #     img_list.append({
+    #         "id": img.id,
+    #         "text": img.img.name,
+    #         "status": img.status,
+    #         "description": img.description
+    #     }
+    #     )
+    return ok(username)
 
 
 @csrf_exempt

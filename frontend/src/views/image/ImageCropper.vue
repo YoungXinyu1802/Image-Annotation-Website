@@ -11,11 +11,15 @@
       <div slot="header" class="el-card-header">
         <h2 class="login-title">上传图片</h2>
       </div>
+     <el-form>
+       <el-form-item label="数据集名称">
+         <el-input v-model="database" placeholder="请输入内容" class = "el-input"></el-input>
+       </el-form-item>
       <el-upload
         name = 'file'
         ref="upload"
         action="http://127.0.0.1:8000/api/upload"
-        :data="{username:this.username}"
+        :data="{username:this.username, database: this.database}"
         list-type="picture-card"
         :before-upload="beforeAvatarUpload"
         multiple
@@ -54,9 +58,10 @@
       <el-dialog :visible.sync="dialogVisible">
         <img width="100%" :src="dialogImageUrl" alt="">
       </el-dialog>
-
+       </el-form>
     </el-card>
-    <el-button type="primary" class="el-button" @click="submitUpload">创建</el-button>
+    <el-button type="primary" class="submit-button" @click="submitUpload">创建</el-button>
+
   </div>
 </template>
 
@@ -77,6 +82,8 @@ export default {
         dialogImageUrl: '',
         dialogVisible: false,
         disabled: false,
+
+        database: ''
 
     }
   },
@@ -104,3 +111,18 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+.image-cropper-wrapper{
+  .el-input{
+    width: 80%
+  }
+
+  .submit-button{
+      position: relative;
+      margin-top: 10px
+  }
+}
+
+
+</style>
