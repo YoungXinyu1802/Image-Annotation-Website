@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 # from models import User
 # from models import Goods
-
+MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/upload_file/uploads/')
 def ok(data: object):
     return JsonResponse({'code': 0, 'message': '操作成功', 'data': data})
 
@@ -20,7 +20,7 @@ def login(request):
     print(username)
     print(password)
     try:
-        user = models.User.objects.get(user_name=username)
+        user = models.UserInfo.objects.get(user_name=username)
         print(user)
     except:
         date = {'flag': 'no', 'msg': 'noUser'}
@@ -47,13 +47,13 @@ def signup(request):
     print(_email)
     print(_password)
     date_msg = ''
-    response_username = models.User.objects.filter(user_name=_username)
+    response_username = models.UserInfo.objects.filter(user_name=_username)
     if(len(response_username) > 0):
         date_msg = "usernameInvalid"
         date_flag = "no"
         date = {'flag': date_flag, 'msg': date_msg}
         return JsonResponse({'request': date})
-    response_email = models.User.objects.filter(email=_email)
+    response_email = models.UserInfo.objects.filter(email=_email)
 
     if(len(response_email) > 0):
         date_msg = "emailInvalid"
@@ -172,13 +172,28 @@ def upload(request):
     username = request.POST.get("username")
     print(username)
     # user_id = token['id']
-    file=request.FILES.get("file")
+    file=request.FILES.getlist("file")
     print(file)
-    new_img = models.LabelImg(img=file, user_id=username)
-    new_img.save()
+
+    for f in file:
+        img_url = os.path.join(MEDIA_ROOT, username).replace('\\', '/')
+        print(img_url)
+        print(os.path.exists(img_url))
+        if not os.path.exists(img_url):
+            print('create')
+            os.makedirs(img_url)
+        # new_img = models.LabelImg(img=file, publish_user_id=username)
+        # new_img.save()
+        _img_url = img_url + '/' + str(f)
+        with open(_img_url, 'wb') as dest:
+            for chunk in f.chunks():
+                dest.write(chunk)
+                print('load')
+        new_img = models.LabelImg(img=_img_url, publish_user_id=username)
+        new_img.save()
 
     img_list = []
-    for img in models.LabelImg.objects.filter(user_id=username):
+    for img in models.LabelImg.objects.filter(publish_user_id=username):
         img_list.append({
             "id": img.id,
             "text": img.img.name,
@@ -188,7 +203,7 @@ def upload(request):
         )
     return ok(img_list)
 
-MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/upload_file/uploads')
+
 @csrf_exempt
 def video2img(request):
     imgsrc = request.POST.getlist("imgSrc")
@@ -210,7 +225,7 @@ def video2img(request):
         myfile.touch(exist_ok=True)
         with open(image_url, 'wb') as f:
             f.write(image_data)  # 打开路径将结果写入到文件中
-        new_img = models.LabelImg(img=image_url, user_id=username)
+        new_img = models.LabelImg(img=image_url, publish_user_id=username)
         new_img.save()
         index += 1
     return ok(imgsrc)
@@ -229,7 +244,7 @@ def createTask(request):
     print(resource)
     print(imgs)
 
-    task = models.LabelImg(user_id = username)
+    task = models.LabelImg(publish_user_id = username)
     task.save()
 
 

@@ -70,11 +70,13 @@
       </div>
       <el-upload
         name = 'file'
+        ref="upload"
         action="http://127.0.0.1:8000/api/upload"
         :data="{username:this.username}"
         list-type="picture-card"
         :before-upload="beforeAvatarUpload"
         multiple
+        :auto-upload="false"
       >
           <i slot="default" class="el-icon-plus"></i>
           <div slot="file" slot-scope="{file}">
@@ -111,6 +113,7 @@
       </el-dialog>
 
     </el-card>
+    <el-button type="primary" class="el-button" @click="submitUpload">创建</el-button>
   </div>
 </template>
 
@@ -139,7 +142,6 @@ export default {
         dialogVisible: false,
         disabled: false,
 
-        fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
       }
     },
     methods: {
@@ -198,6 +200,34 @@ export default {
         this.dialogVisible = true;
       },
 
+      submitUpload() {
+        console.log('submit!');
+        console.log(this.username)
+        // let newTask = new FormData();
+        // newTask.append('name', this.task.name);
+        // newTask.append('type', this.task.type);
+        // newTask.append('dynamicTags', this.task.dynamicTags);
+        // newTask.append('resource', this.task.resource);
+        // newTask.append('imgs', this.task.imgs);
+        let newTask = {
+          name: '',
+          type: [],
+          dynamicTags: ['标签一', '标签二', '标签三'],
+          resource: '',
+          desc: '',
+          imgs: '',
+        };
+        newTask.type = this.task.type;
+        newTask.dynamicTags = this.task.dynamicTags;
+        newTask.resource = this.task.resource;
+        newTask.imgs = this.task.imgs;
+
+        console.log(newTask);
+        console.log(this.task.name)
+
+
+        this.$refs.upload.submit()
+      },
 
       handleDownload(file) {
         console.log(file);
@@ -238,6 +268,10 @@ export default {
   }
   .el-input {
     width: 80%
+  }
+  .el-button{
+    postition: "relative";
+    margin-top: 10px
   }
 
   //.form-list {

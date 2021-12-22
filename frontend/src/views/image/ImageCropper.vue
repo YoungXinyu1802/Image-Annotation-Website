@@ -7,54 +7,56 @@
         <p>github地址：访问 <el-link type="success" href="https://github.com/xyxiao001/vue-cropper" target="_blank">Vue-Cropper</el-link></p>
       </template>
     </Hints>
-    <el-row :gutter="20">
-      <el-col :span="10">
-        <el-card shadow="always">
-          <div slot="header" class="title">裁剪区域</div>
-          <div class="content-box" style=" height: 400px;">
-            <VueCropper
-              ref="cropper"
-              :img="configObj.imgSrc"
-              :can-move="configObj.canMove"
-              :auto-crop="configObj.autoCrop"
-              :center-box="configObj.centerBox"
-              :info-true="configObj.infoTrue"
-              :full="configObj.full"
-              :auto-crop-width="configObj.autoCropWidth"
-              :auto-crop-height="configObj.autoCropHeight"
-              :output-type="configObj.outputType"
-              @realTime="realTime"
-            />
+   <el-card shadow="always">
+      <div slot="header" class="el-card-header">
+        <h2 class="login-title">上传图片</h2>
+      </div>
+      <el-upload
+        name = 'file'
+        ref="upload"
+        action="http://127.0.0.1:8000/api/upload"
+        :data="{username:this.username}"
+        list-type="picture-card"
+        :before-upload="beforeAvatarUpload"
+        multiple
+        :auto-upload="false"
+      >
+          <i slot="default" class="el-icon-plus"></i>
+          <div slot="file" slot-scope="{file}">
+            <img
+              class="el-upload-list__item-thumbnail"
+              :src="file.url" alt=""
+            >
+            <span class="el-upload-list__item-actions">
+              <span
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(file)"
+              >
+                <i class="el-icon-zoom-in"></i>
+              </span>
+              <span
+                v-if="!disabled"
+                class="el-upload-list__item-delete"
+                @click="handleDownload(file)"
+              >
+                <i class="el-icon-download"></i>
+              </span>
+              <span
+                v-if="!disabled"
+                class="el-upload-list__item-delete"
+                @click="handleRemove(file)"
+              >
+                <i class="el-icon-delete"></i>
+              </span>
+            </span>
           </div>
-        </el-card>
-      </el-col>
-      <el-col :span="4">
-        <el-card shadow="always">
-          <div slot="header" class="title">设置区域</div>
-          <div class="content-box" style=" height: 400px;">
-            <div style="height: 100px;">
-              <UploadImage @on-success="handleSuccess" />
-              <el-button size="small" type="primary" style="margin-top: 20px">
-                <a @click="downloadImage">生成图片</a>
-              </el-button>
-              <a ref="downloadDom" :href="downImg" download="demo.png" />
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="10">
-        <el-card shadow="always">
-          <div slot="header" class="title">预览区域</div>
-          <div class="content-box" style="height: 400px;">
-            <div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px', 'overflow': 'hidden', 'zoom': (400 / previews.h)}">
-              <div :style="previews.div">
-                <img :src="previews.url" :style="previews.img" alt="预览">
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+      </el-upload>
+      <el-dialog :visible.sync="dialogVisible">
+        <img width="100%" :src="dialogImageUrl" alt="">
+      </el-dialog>
+
+    </el-card>
+    <el-button type="primary" class="el-button" @click="submitUpload">创建</el-button>
   </div>
 </template>
 
@@ -68,28 +70,17 @@ export default {
   components: { Hints, VueCropper, UploadImage },
   data() {
     return {
-      configObj: {
-        imgSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/images/img02.jpg',
-        canMove: false,
-        autoCrop: true,
-        centerBox: true,
-        infoTrue: true,
-        full: true,
-        autoCropWidth: 300,
-        autoCropHeight: 200,
-        outputType: 'png'
-      },
-      downImg: '#',
-      previews: {}
+        username: localStorage.getItem('username'),
+        inputVisible: false,
+        inputValue: '',
+
+        dialogImageUrl: '',
+        dialogVisible: false,
+        disabled: false,
+
     }
   },
   methods: {
-    handleSuccess(data) {
-      this.configObj.imgSrc = data
-    },
-    realTime(data) {
-      this.previews = data
-    },
     downloadImage() {
       this.$refs.cropper.getCropBlob(data => {
         this.downImg = window.URL.createObjectURL(data)
@@ -102,7 +93,14 @@ export default {
           })
         }
       })
-    }
+    },
+      submitUpload() {
+        console.log('submit!');
+        console.log(this.username)
+        this.$refs.upload.submit()
+      },
+
+
   }
 }
 </script>

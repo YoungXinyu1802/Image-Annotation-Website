@@ -8,24 +8,24 @@
       </template>
     </Hints>
     <el-row :gutter="20">
-      <el-col :span="16">
+      <el-col :span="12">
         <el-card shadow="always">
-          <div slot="header" class="title">合成区域</div>
-          <div class="box-wrapper">
-            <div class="drag-container">
-              <video :src="videoSrc" controls/>
-            </div>
+          <div slot="header" class="title">视频区域</div>
+          <div>
+          <input type="file" @change="getBigectURL($event)" />
           </div>
+          <video :src="videoSrc" controls="controls" width="500" height="400"></video>
+
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="12">
         <el-card shadow="always">
-          <div slot="header" class="title">设置区域</div>
+          <div slot="header" class="title">提取区域</div>
         <div>
-            <el-button @click="cutPicture">
+            <el-button type="primary" @click="cutPicture">
                 截图
             </el-button>
-            <el-button @click="commit">
+            <el-button type="primary" @click="commit">
                 提交
             </el-button>
         </div>
@@ -63,22 +63,13 @@ export default {
     return {
       // videoSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/videos/houlang.mp4',
       username: localStorage.getItem('username'),
-      videoSrc: require("../../assets/video/video.mp4"),
+      videoSrc:'',
+      // videoSrc: require("../../assets/video/video.mp4"),
       // elements: [], // 叠加组件数组
       // activeEle: {}, // 当前图片上聚焦的叠加组件
       // eleNum: 0,
       imgSrc: []
     }
-  },
-  computed: {
-    // 选择的文本
-    activeEleText() {
-      if (this.activeEle.type === 'text') {
-        return this.activeEle
-      }
-    }
-  },
-  created() {
   },
   methods: {
     cutPicture() {
@@ -90,6 +81,17 @@ export default {
       var oGrayImg = canvas.toDataURL('image/jpeg');
       // this.imgSrc = oGrayImg
       this.imgSrc.push(oGrayImg)
+    },
+    getBigectURL (event) {
+      console.log('getBigectURL', event)
+      var current = event.target.files[0]
+      var fileReader = new FileReader()
+      fileReader .readAsDataURL(current)
+      var that = this
+      fileReader.onload = function (e) {
+        that.videoSrc = e.currentTarget.result
+        console.log(that.videoSrc)
+      }
     },
 
     commit(){
