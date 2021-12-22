@@ -126,6 +126,7 @@ export default {
   components: { Hints },
     data() {
       return {
+        username: localStorage.getItem('username'),
         task: {
           name: '',
           type: [],
@@ -133,7 +134,6 @@ export default {
           resource: '',
           desc: '',
         },
-        username: localStorage.getItem('username'),
 
         inputVisible: false,
         inputValue: '',
@@ -148,6 +148,7 @@ export default {
     methods: {
       onSubmit() {
         console.log('submit!');
+        console.log(this.username)
         // let newTask = new FormData();
         // newTask.append('name', this.task.name);
         // newTask.append('type', this.task.type);
