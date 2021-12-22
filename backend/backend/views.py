@@ -11,7 +11,7 @@ from pathlib import Path
 # from models import Goods
 
 def ok(data: object):
-    return JsonResponse({'code': 20000, 'message': '操作成功', 'data': data})
+    return JsonResponse({'code': 0, 'message': '操作成功', 'data': data})
 
 @csrf_exempt
 def login(request):
@@ -213,5 +213,36 @@ def video2img(request):
         new_img = models.LabelImg(img=image_url, user_id=username)
         new_img.save()
         index += 1
-
     return ok(imgsrc)
+
+
+@csrf_exempt
+def createTask(request):
+    username = request.POST.get("username")
+    type = request.POST.get("type")
+    dynamicTags = request.POST.get("dynamicTags")
+    resource = request.POST.get("resource")
+    imgs = request.POST.get("imgs")
+    print(username)
+    print(type)
+    print(dynamicTags)
+    print(resource)
+    print(imgs)
+
+    task = models.LabelImg(user_id = username)
+    task.save()
+
+
+    return ok(username)
+
+@csrf_exempt
+def getTasklist(request):
+    # username = ()
+    # data = models.LabelImg.objects.filter(user_id='yxy1802')
+    # print(data)
+    data = models.LabelImg.objects.all().values()
+    print(data[0])
+    contents = list(data)
+    print(contents)
+    print(ok(contents))
+    return ok(contents)
