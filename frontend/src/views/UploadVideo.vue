@@ -1,10 +1,9 @@
 <template>
   <div class="video-mark-wrapper">
     <Hints>
-      <template slot="hintName">视频水印</template>
+      <template slot="hintName">上传视频</template>
       <template slot="hintInfo">
-        <p>基于VueDRR拖拽功能，在视频上通过叠加图片、文字等，实现视频添加水印的功能</p>
-        <p>VueDRR：基于vue-draggable-resizable的vue组件，可以实现拖动、拉伸和旋转功能</p>
+        <p>上传视频后，点击截取有效帧</p>
       </template>
     </Hints>
     <el-row :gutter="20">
@@ -48,9 +47,9 @@
 <script>
 import Hints from '../components/Hints'
 import ElementDrr from '../components/ElementDrr'
-import ImageRichText from '../components/ImageRichText'
+// import ImageRichText from '../components/ImageRichText'
 import TextSetting from '../components/TextSetting'
-import UploadImage from '../components/UploadImage'
+// import UploadImage from '../components/UploadImage'
 import {calcImageSize} from '../utils'
 
 import Qs from "qs";
@@ -58,7 +57,7 @@ import axios from "axios";
 
 export default {
   name: 'VideoMark',
-  components: {Hints, ElementDrr, ImageRichText, TextSetting, UploadImage},
+  components: {Hints, ElementDrr, TextSetting},
   data() {
     return {
       // videoSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/videos/houlang.mp4',

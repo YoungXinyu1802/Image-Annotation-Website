@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout'
-import { asyncRoutes } from './routes'
 
 Vue.use(Router)
 
@@ -28,20 +27,6 @@ export const constantRoutes = [
     component: () => import('../views/Signup'),
     hidden: true,
     meta: { title: '注册' }
-  },
-  {
-    path: '401',
-    name: '401',
-    component: () => import('../views/error-page/401'),
-    hidden: true,
-    meta: { title: '401' }
-  },
-  {
-    path: '404',
-    name: '404',
-    component: () => import('../views/error-page/404'),
-    hidden: true,
-    meta: { title: '404' }
   },
   {
     path: '/',
@@ -154,7 +139,7 @@ export const constantRoutes = [
   }
 ]
 
-const routes = [...constantRoutes, ...asyncRoutes]
+const routes = [...constantRoutes]
 
 export default new Router({
   routes

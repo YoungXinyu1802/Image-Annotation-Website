@@ -1,5 +1,13 @@
 <template>
-  <div>
+  <div class="video-mark-wrapper">
+    <Hints>
+      <template slot="hintName">图片标注</template>
+      <template slot="hintInfo">
+        <p>标注图片并导出数据</p>
+      </template>
+    </Hints>
+
+      <div>
     <el-form :model="formInline">
       <el-form-item label="数据集：">
         <el-select v-model="formInline.region" placeholder="选择数据集">
@@ -99,16 +107,25 @@
       </div>
     </el-dialog>
   </div>
+  </div>
 </template>
+
 <script>
-// import { AIMarker } from 'Vue-Picture-BD-Marker'
-import { AIMarker } from 'vue-picture-bd-marker'
-import { getImgList } from '../api'
+import Hints from '../components/Hints'
+import ElementDrr from '../components/ElementDrr'
+// import ImageRichText from '../components/ImageRichText'
+import TextSetting from '../components/TextSetting'
+// import UploadImage from '../components/UploadImage'
+import {calcImageSize} from '../utils'
+
 import Qs from "qs";
 import axios from "axios";
+import { AIMarker } from 'vue-picture-bd-marker'
+import { getImgList } from '../api'
+
 export default {
-  name: 'OrgTree',
-  components: { 'ui-marker': AIMarker },
+  name: 'VideoMark',
+  components: {'ui-marker': AIMarker, Hints, ElementDrr, TextSetting},
   data() {
     return {
       username: localStorage.getItem('username'),
@@ -427,78 +444,90 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-.pics {
-  width: 100%;
-  overflow: hidden;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .arrow {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    //background-image: url('~@/assets/images/common/left.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    &.arrow-right {
-      transform: rotate(180deg);
-    }
-  }
-  .pic-container {
-    // width: 1180px;
-    width: calc(100% - 30px);
-    height: 114px;
-    margin: 0 auto;
+<style lang="less">
+.video-mark-wrapper {
+  .pics {
+    width: 100%;
     overflow: hidden;
-    .pic-box {
-      height: 100%;
-      // min-width: 1180px;
-      min-width: calc(100% - 30px);
-      transition: all 0.5s linear;
-      display: flex;
-      flex-wrap: nowrap;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .arrow {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      //background-image: url('~@/assets/images/common/left.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+
+      &.arrow-right {
+        transform: rotate(180deg);
+      }
     }
-    .pic {
-      float: left;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      margin-right: 10px;
-      width: 185px;
+
+    .pic-container {
+      // width: 1180px;
+      width: calc(100% - 30px);
       height: 114px;
-      .info {
-        width: 183px;
+      margin: 0 auto;
+      overflow: hidden;
+
+      .pic-box {
         height: 100%;
-        background-size: 100%;
-        background-repeat: no-repeat;
-        background-position: center;
-        position: relative;
-        &:hover {
-          border: 1px solid skyblue;
+        // min-width: 1180px;
+        min-width: calc(100% - 30px);
+        transition: all 0.5s linear;
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+      .pic {
+        float: left;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        margin-right: 10px;
+        width: 185px;
+        height: 114px;
+
+        .info {
+          width: 183px;
+          height: 100%;
+          background-size: 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+          position: relative;
+
+          &:hover {
+            border: 1px solid skyblue;
+          }
         }
       }
     }
   }
-}
-.tagList {
-  .title {
-    text-align: center;
-    font-weight: bold;
-  }
-  .handleButton {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .tags {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    .el-icon-delete {
-      cursor: pointer;
+
+  .tagList {
+    .title {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .handleButton {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .tags {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+
+      .el-icon-delete {
+        cursor: pointer;
+      }
     }
   }
 }
 </style>
-
