@@ -59,15 +59,84 @@ export const constantRoutes = [
       }
     }]
   },
-  // {
-  //   path: 'https://github.com/baimingxuan/vue-admin-design.git',
-  //   name: 'doc',
-  //   component: Layout,
-  //   meta: {
-  //     title: '文档',
-  //     icon: 'vue-dsn-icon-wendang'
-  //   }
-  // },
+  {
+    path: '/',
+    name: 'Layout',
+    component: Layout,
+    redirect: '/tasklist',
+    children: [{
+      path: 'tasklist',
+      name: 'TaskList',
+      component: () => import('../views/TaskList'),
+      meta: {
+        title: '任务列表',
+        icon: 'vue-dsn-icon-wendang',
+      }
+    }]
+  },
+  {
+    path: '/',
+    name: 'Layout',
+    component: Layout,
+    redirect: '/uploadImg',
+    children: [{
+      path: 'uploadImg',
+      name: 'UploadImg',
+      component: () => import('../views/UploadImg'),
+      meta: {
+        title: '图片上传',
+        icon: 'vue-dsn-icon-picture',
+      }
+    }]
+  },
+  {
+    path: '/',
+    name: 'Layout',
+    component: Layout,
+    redirect: '/uploadVideo',
+    children: [{
+      path: 'uploadVideo',
+      name: 'UploadVideo',
+      component: () => import('../views/UploadVideo'),
+      meta: {
+        title: '视频上传',
+        icon: 'vue-dsn-icon-video',
+      }
+    }]
+  },
+
+
+  {
+    path: '/',
+    name: 'Layout',
+    component: Layout,
+    redirect: '/createTask',
+    children: [{
+      path: 'createTask',
+      name: 'CreateTask',
+      component: () => import('../views/CreateTask'),
+      meta: {
+        title: '任务创建',
+        icon: 'vue-dsn-icon-biaoge',
+      }
+    }]
+  },
+
+  {
+    path: '/',
+    name: 'Layout',
+    component: Layout,
+    redirect: '/imgLabel',
+    children: [{
+      path: 'imgLabel',
+      name: 'ImgLabel',
+      component: () => import('../views/LabelImg'),
+      meta: {
+        title: '图片标注',
+        icon: 'vue-dsn-icon-bianjiqi',
+      }
+    }]
+  },
   {
     path: '/',
     name: 'Layout',

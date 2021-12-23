@@ -10,106 +10,106 @@ import Layout from '../layout'
  * */
 
 export const asyncRoutes = [
-  {
-    path: '/form-table',
-    name: 'FormTable',
-    component: Layout,
-    redirect: '/form-table/table-classic',
-    meta: {
-      title: '任务管理',
-      icon: 'vue-dsn-icon-biaoge'
-    },
-    children: [
-      {
-        path: 'table-classic',
-        name: 'TableClassic',
-        component: () => import('../views/form-table/TableClassic'),
-        meta: {
-          title: '综合表格'
-        }
-      },
-      {
-        path: 'form-list',
-        name: 'FormList',
-        component: () => import('../views/form-table/FormList'),
-        meta: {
-          title: '任务创建'
-        }
-      },
-      {
-        path: 'table-inline-edit',
-        name: 'TableInlineEdit',
-        component: () => import('../views/form-table/TableInlineEdit'),
-        meta: {
-          title: '图片上传'
-        }
-      }
-    ]
-  },
-  {
-    path: '/image',
-    name: 'Image',
-    component: Layout,
-    redirect: '/image/image-cropper',
-    meta: {
-      title: '图片处理',
-      icon: 'vue-dsn-icon-picture'
-    },
-    children: [
-      {
-        path: 'image-cropper',
-        name: 'ImageCropper',
-        component: () => import('../views/image/ImageCropper'),
-        meta: {
-          title: '图片裁剪'
-        }
-      },
-      {
-        path: 'image-compress',
-        name: 'ImageCompress',
-        component: () => import('../views/image/ImageCompress'),
-        meta: {
-          title: '图片压缩'
-        }
-      },
-      {
-        path: 'image-synthesizer',
-        name: 'ImageSynthesizer',
-        component: () => import('../views/image/ImageSynthesizer'),
-        meta: {
-          title: '图片合成'
-        }
-      }
-    ]
-  },
-  {
-    path: '/video',
-    name: 'Video',
-    component: Layout,
-    redirect: '/video/video-player',
-    meta: {
-      title: '视频处理',
-      icon: 'vue-dsn-icon-video'
-    },
-    children: [
-      {
-        path: 'video-player',
-        name: 'VideoPlayer',
-        component: () => import('../views/video/VideoPlayer'),
-        meta: {
-          title: '视频播放器'
-        }
-      },
-      {
-        path: 'video-mark',
-        name: 'VideoMark',
-        component: () => import('../views/video/VideoMark'),
-        meta: {
-          title: '视频水印'
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/form-table',
+  //   name: 'FormTable',
+  //   component: Layout,
+  //   redirect: '/form-table/table-classic',
+  //   meta: {
+  //     title: '任务管理',
+  //     icon: 'vue-dsn-icon-biaoge'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'table-classic',
+  //       name: 'TableClassic',
+  //       component: () => import('../views/form-table/TableClassic'),
+  //       meta: {
+  //         title: '综合表格'
+  //       }
+  //     },
+  //     {
+  //       path: 'form-list',
+  //       name: 'FormList',
+  //       component: () => import('../views/form-table/FormList'),
+  //       meta: {
+  //         title: '任务创建'
+  //       }
+  //     },
+  //     {
+  //       path: 'table-inline-edit',
+  //       name: 'TableInlineEdit',
+  //       component: () => import('../views/form-table/TableInlineEdit'),
+  //       meta: {
+  //         title: '图片上传'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/image',
+  //   name: 'Image',
+  //   component: Layout,
+  //   redirect: '/image/image-cropper',
+  //   meta: {
+  //     title: '图片处理',
+  //     icon: 'vue-dsn-icon-picture'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'image-cropper',
+  //       name: 'ImageCropper',
+  //       component: () => import('../views/image/ImageCropper'),
+  //       meta: {
+  //         title: '图片裁剪'
+  //       }
+  //     },
+  //     {
+  //       path: 'image-compress',
+  //       name: 'ImageCompress',
+  //       component: () => import('../views/image/ImageCompress'),
+  //       meta: {
+  //         title: '图片压缩'
+  //       }
+  //     },
+  //     {
+  //       path: 'image-synthesizer',
+  //       name: 'ImageSynthesizer',
+  //       component: () => import('../views/image/ImageSynthesizer'),
+  //       meta: {
+  //         title: '图片合成'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/video',
+  //   name: 'Video',
+  //   component: Layout,
+  //   redirect: '/video/video-player',
+  //   meta: {
+  //     title: '视频处理',
+  //     icon: 'vue-dsn-icon-video'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'video-player',
+  //       name: 'VideoPlayer',
+  //       component: () => import('../views/video/VideoPlayer'),
+  //       meta: {
+  //         title: '视频播放器'
+  //       }
+  //     },
+  //     {
+  //       path: 'video-mark',
+  //       name: 'VideoMark',
+  //       component: () => import('../views/video/VideoMark'),
+  //       meta: {
+  //         title: '视频水印'
+  //       }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/tools',
   //   name: 'Tools',
@@ -173,88 +173,88 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-  {
-    path: '/editors',
-    name: 'Editors',
-    component: Layout,
-    redirect: '/editors/markdown',
-    meta: {
-      title: '编辑器',
-      icon: 'vue-dsn-icon-bianjiqi'
-    },
-    children: [
-      {
-        path: 'markdown',
-        name: 'Markdown',
-        component: () => import('../views/editors/MarkdownEditor'),
-        meta: {
-          title: 'Markdown编辑器'
-        }
-      },
-      {
-        path: 'rich-text',
-        name: 'ImageRichText',
-        component: () => import('../views/editors/RichTextEditor'),
-        meta: {
-          title: '富文本编辑器'
-        }
-      }
-    ]
-  },
-  {
-    path: '/tree',
-    name: 'Tree',
-    component: Layout,
-    redirect: '/tree/org-tree',
-    meta: {
-      title: '树形结构',
-      icon: 'vue-dsn-icon-shuxing'
-    },
-    children: [
-      {
-        path: 'org-tree',
-        name: 'OrgTree',
-        component: () => import('../views/tree/OrgTree'),
-        meta: {
-          title: '组织树'
-        }
-      },
-      {
-        path: 'ele-tree',
-        name: 'EleTree',
-        component: () => import('../views/tree/EleTree'),
-        meta: {
-          title: '控件树'
-        }
-      }
-    ]
-  },
-  {
-    path: '/graph-editors',
-    name: 'GraphEditors',
-    component: Layout,
-    redirect: '/graph-editors/flow',
-    meta: {
-      title: '图形编辑器',
-      icon: 'vue-dsn-icon-excel'
-    },
-    children: [
-      {
-        path: 'flow',
-        name: 'Flow',
-        component: () => import('../views/graph-editors/FlowEditor'),
-        meta: {
-          title: '流程图'
-        }
-      },
-      {
-        path: 'mind-editor',
-        name: 'MindEditor',
-        component: () => import('../views/graph-editors/MindEditor'),
-        meta: {
-          title: '思维导图'
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/editors',
+  //   name: 'Editors',
+  //   component: Layout,
+  //   redirect: '/editors/markdown',
+  //   meta: {
+  //     title: '编辑器',
+  //     icon: 'vue-dsn-icon-bianjiqi'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'markdown',
+  //       name: 'Markdown',
+  //       component: () => import('../views/editors/MarkdownEditor'),
+  //       meta: {
+  //         title: 'Markdown编辑器'
+  //       }
+  //     },
+  //     {
+  //       path: 'rich-text',
+  //       name: 'ImageRichText',
+  //       component: () => import('../views/editors/RichTextEditor'),
+  //       meta: {
+  //         title: '富文本编辑器'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/tree',
+  //   name: 'Tree',
+  //   component: Layout,
+  //   redirect: '/tree/org-tree',
+  //   meta: {
+  //     title: '树形结构',
+  //     icon: 'vue-dsn-icon-shuxing'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'org-tree',
+  //       name: 'OrgTree',
+  //       component: () => import('../views/tree/OrgTree'),
+  //       meta: {
+  //         title: '组织树'
+  //       }
+  //     },
+  //     {
+  //       path: 'ele-tree',
+  //       name: 'EleTree',
+  //       component: () => import('../views/tree/EleTree'),
+  //       meta: {
+  //         title: '控件树'
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/graph-editors',
+  //   name: 'GraphEditors',
+  //   component: Layout,
+  //   redirect: '/graph-editors/flow',
+  //   meta: {
+  //     title: '图形编辑器',
+  //     icon: 'vue-dsn-icon-excel'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'flow',
+  //       name: 'Flow',
+  //       component: () => import('../views/graph-editors/FlowEditor'),
+  //       meta: {
+  //         title: '流程图'
+  //       }
+  //     },
+  //     {
+  //       path: 'mind-editor',
+  //       name: 'MindEditor',
+  //       component: () => import('../views/graph-editors/MindEditor'),
+  //       meta: {
+  //         title: '思维导图'
+  //       }
+  //     }
+  //   ]
+  // },
 ]

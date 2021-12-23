@@ -117,8 +117,8 @@
 </template>
 
 <script>
-import Hints from '../../components/Hints'
-import { selectData, cascaderData } from './data'
+import Hints from '../components/Hints'
+// import { selectData, cascaderData } from './data'
 import axios from 'axios'
 import Qs from 'qs'
 
