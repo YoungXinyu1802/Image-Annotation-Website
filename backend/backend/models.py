@@ -27,6 +27,9 @@ class Task(models.Model):
     claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
     status = models.CharField(max_length=20, default="未领取")
 
+# class Database(models.Model):
+#     publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
+#     name = models.CharField(max_length=20, default="NULL")
 
 class LabelImg(models.Model):
     # publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
@@ -40,6 +43,10 @@ class LabelImg(models.Model):
 
     # def __str__(self):
     #     return self.img.name
+
+
+
+
 
 
 

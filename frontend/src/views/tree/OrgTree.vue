@@ -29,13 +29,17 @@
       <div class="arrow arrow-left" @click="showMore('down')"></div>
       <div class="pic-container">
         <div class="pic-box" ref="picContainer">
-          <div class="pic" v-for="(v, i) in pics" :key="i">
-            <div
-              class="info"
-              :style="{ 'background-image': 'url(' + v.cropImage + ')' }"
-              @click="activePic(v.cropImage)"
-            ></div>
+          <div class = 'pic' v-for = "(v, i) in imglist">
+            <img :src = "'data:img/jpg;base64,' + v">
           </div>
+
+<!--          <div class="pic" v-for="(v, i) in pics" :key="i">-->
+<!--            <div-->
+<!--              class="info"-->
+<!--              :style="{ 'background-image': 'url(' + v.cropImage + ')' }"-->
+<!--              @click="activePic(v.cropImage)"-->
+<!--            ></div>-->
+<!--          </div>-->
         </div>
       </div>
       <div class="arrow arrow-right" @click="showMore('up')"></div>
@@ -98,6 +102,7 @@
 <script>
 // import { AIMarker } from 'Vue-Picture-BD-Marker'
 import { AIMarker } from 'vue-picture-bd-marker'
+import { getImgList } from '../../api'
 import Qs from "qs";
 import axios from "axios";
 export default {
@@ -126,6 +131,7 @@ export default {
         checked: false, // false表示当前图片还没有标记过
         data: [] // 表示图片矩形标记信息
       },
+      imglist: [],
 
       // *****************************
       pics: [
@@ -188,8 +194,24 @@ export default {
       // }
     }
   },
+  create(){
+    let parm = Qs.stringify({'username': localStorage.getItem('username')})
+    getImgList(parm).then(res => {
+
+    })
+  },
   mounted() {
-    // this.onImageLoad()
+    let parm = Qs.stringify({'username': localStorage.getItem('username')})
+    console.log(parm)
+    getImgList(parm).then(res => {
+      console.log(res.data.code)
+      this.imglist = res.data.data
+      console.log(this.imglist)
+
+    })
+
+    this.onImageLoad()
+
   },
   methods: {
     /**记录图片当前的大小和原始大小 data={rawW,rawH,currentW,currentH} */

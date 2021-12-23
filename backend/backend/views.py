@@ -263,3 +263,24 @@ def getTasklist(request):
     print(contents)
     print(ok(contents))
     return ok(contents)
+
+@csrf_exempt
+def getImglist(request):
+
+    username = request.POST.get('username')
+    database = request.POST.get('database')
+    url = os.path.join(MEDIA_ROOT, 'yxy1802', 'database', 'bee').replace('\\', '/')
+    print(url)
+    imglist = os.listdir(url)
+    imgNum = len(imglist)
+    print(imgNum)
+    print(imglist)
+    b64 = []
+    for img in imglist:
+        print(img)
+        f = open(url + '/' + img, 'rb')
+        res = f.read()
+        s = base64.b64encode(res)
+        b64.append(str(s)[2 : len(str(s)) - 1])
+    print(ok(b64))
+    return ok(b64)
