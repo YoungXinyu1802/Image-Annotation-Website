@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from lxml import etree
 from django.core import signing
 import os
+import json
 from pathlib import Path
 # from models import User
 # from models import Goods
@@ -92,6 +93,23 @@ def signup(request):
         date_flag = 'no'
     date = {'flag': date_flag, 'msg': date_msg}
     return JsonResponse({'request': date})
+
+def toCreateML(filename, xmin, ymin, xmax, ymax, tags):
+    res = []
+    image_name = filename
+    annotations = []
+    for i in range(len(xmin)):
+        label = tags[i]
+        x = (xmin[i] + xmax[i]) / 2
+        y = (ymin[i] + ymax[i]) / 2
+        width = xmax[i] - xmin[i]
+        height = ymax[i] - ymin[i]
+        coordinates = dict(zip(['x', 'y', 'width', 'height'], [x, y, width, height]))
+        anno = dict(zip(['label', 'coordinates'], [label, coordinates]))
+        annotations.append(anno)
+    createML = dict(zip(['image', 'annotations'], [image_name, annotations]))
+    res = '[' + json.dumps(createML) + ']'
+    return res
 
 def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
     # 创建一个annotion节点
