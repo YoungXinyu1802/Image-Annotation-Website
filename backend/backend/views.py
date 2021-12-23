@@ -19,24 +19,42 @@ def login(request):
     password = request.POST.get('password')
     print(username)
     print(password)
-    try:
-        user = models.UserInfo.objects.get(user_name=username)
-        print(user)
-    except:
-        date = {'flag': 'no', 'msg': 'noUser'}
-        print("noUser")
-        return JsonResponse({'request':date})
-
-    if password == user.password:
+    user = models.UserInfo.objects.filter(user_name=username).values()
+    if len(user) == 0:
+        user = models.UserInfo.objects.filter(email=username).values()
+        if len(user) == 0:
+            date = {'flag': 'no', 'msg': 'noUser'}
+            return JsonResponse({'request': date})
+    userinfo = user[0]
+    print(userinfo)
+    if password == userinfo.get('password', 'null'):
         date_msg = "success"
-        date_flag = "yes"
+        # date_flag = "yes"
         print('成功')
     else:
         date_msg = 'pwdError'
-        date_flag = 'no'
-    date = {'flag': date_flag, 'msg': date_msg}
+        # date_flag = 'no'
+    date = {'flag': date_msg, 'msg': userinfo}
+    return JsonResponse({'request': date})
 
-    return JsonResponse({'request':date})
+    # try:
+    #     user = models.UserInfo.objects.get(user_name=username)
+    #     print(user)
+    # except:
+    #     date = {'flag': 'no', 'msg': 'noUser'}
+    #     print("noUser")
+    #     return JsonResponse({'request':date})
+
+    # if password == user.password:
+    #     date_msg = "success"
+    #     date_flag = "yes"
+    #     print('成功')
+    # else:
+    #     date_msg = 'pwdError'
+    #     date_flag = 'no'
+    # date = {'flag': date_flag, 'msg': date_msg}
+    #
+    # return JsonResponse({'request':date})
 
 @csrf_exempt
 def signup(request):

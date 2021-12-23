@@ -7,32 +7,36 @@
       <ul class="user-info">
         <li>
           <label>用户名：</label>
-          <span>{{ userInfo.username }}</span>
-        </li>
-        <li>
-          <label>角色：</label>
-          <span>{{ userInfo.roles }}</span>
-        </li>
-        <li>
-          <label>昵称：</label>
-          <span>{{ userInfo.nickname }}</span>
-        </li>
-        <li>
-          <label>电话号码：</label>
-          <span>{{ userInfo.phone }}</span>
+          <span>{{ this.userInfo.username }}</span>
         </li>
         <li>
           <label>邮箱：</label>
-          <span>{{ userInfo.email }}</span>
+          <span>{{ this.userInfo.email }}</span>
         </li>
-        <li>
-          <label>创建时间：</label>
-          <span>{{ userInfo.createtime }}</span>
-        </li>
-        <li>
-          <label>更新时间：</label>
-          <span>{{ userInfo.updatetime }}</span>
-        </li>
+<!--        <li>-->
+<!--          <label>角色：</label>-->
+<!--          <span>{{ userInfo.roles }}</span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label>昵称：</label>-->
+<!--          <span>{{ userInfo.nickname }}</span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label>电话号码：</label>-->
+<!--          <span>{{ userInfo.phone }}</span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label>邮箱：</label>-->
+<!--          <span>{{ userInfo.email }}</span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label>创建时间：</label>-->
+<!--          <span>{{ userInfo.createtime }}</span>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--          <label>更新时间：</label>-->
+<!--          <span>{{ userInfo.updatetime }}</span>-->
+<!--        </li>-->
       </ul>
     </el-card>
   </div>
@@ -45,13 +49,13 @@ export default {
   name: 'UserCenter',
   data() {
     return {
-      userInfo: {}
+      userInfo: {
+        username: localStorage.getItem('username'),
+        email: localStorage.getItem('email')
+      }
     }
   },
   created() {
-    getUserInfo().then(res => {
-      this.userInfo = res
-    })
   }
 }
 </script>

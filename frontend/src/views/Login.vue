@@ -77,24 +77,26 @@ export default {
             function(resp) {
               const flag = resp.data.request['flag']
               const msg = resp.data.request['msg']
-              if (flag === 'yes') {
+              console.log(msg)
+              if (flag === 'success') {
                 alert('登录成功')
                 // _this.loading = true
                 _this.loading = true
                 login(data).then(res => {
                   _this.loading = false
                   setToken(res.token)
-                  localStorage.setItem('username', _this.loginForm.username)
-                  localStorage.setItem('password', _this.loginForm.password)
+                  localStorage.setItem('username', msg['user_name'])
+                  localStorage.setItem('password', msg['password'])
+                  localStorage.setItem('email', msg['email'])
                   console.log(localStorage.getItem('username'))
                   _this.$router.push({ path: _this.redirect || '/' })
                 }).catch(() => {
                   _this.loading = false
                 })
               } else {
-                if (msg === 'pwdError') {
+                if (flag === 'pwdError') {
                   alert('密码错误')
-                } else if (msg === 'noUser') {
+                } else if (flag === 'no') {
                   alert('用户不存在')
                 }
               }

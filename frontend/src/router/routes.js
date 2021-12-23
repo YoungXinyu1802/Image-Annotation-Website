@@ -16,7 +16,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/form-table/table-classic',
     meta: {
-      title: '表格&表单',
+      title: '任务管理',
       icon: 'vue-dsn-icon-biaoge'
     },
     children: [
@@ -33,7 +33,7 @@ export const asyncRoutes = [
         name: 'FormList',
         component: () => import('../views/form-table/FormList'),
         meta: {
-          title: '表单列表'
+          title: '任务创建'
         }
       },
       {
@@ -41,7 +41,7 @@ export const asyncRoutes = [
         name: 'TableInlineEdit',
         component: () => import('../views/form-table/TableInlineEdit'),
         meta: {
-          title: '行内编辑表格'
+          title: '图片上传'
         }
       }
     ]
@@ -110,69 +110,69 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/tools',
-    name: 'Tools',
-    component: Layout,
-    redirect: '/tools/image-upload',
-    meta: {
-      title: '组件',
-      icon: 'vue-dsn-icon-zujian'
-    },
-    children: [
-      {
-        path: 'image-upload',
-        name: 'ImageUpload',
-        component: () => import('../views/tools/ImageUpload'),
-        meta: {
-          title: '图片上传'
-        }
-      },
-      {
-        path: 'drag',
-        name: 'Drag',
-        component: () => import('../views/tools/Drag'),
-        redirect: '/tools/drag/drag-list',
-        meta: {
-          title: '拖拽'
-        },
-        children: [
-          {
-            path: 'drag-list',
-            name: 'DragList',
-            component: () => import('../views/tools/Drag/DragList'),
-            meta: {
-              title: '列表拖拽'
-            }
-          },
-          {
-            path: 'vue-drr',
-            name: 'VueDrr',
-            component: () => import('../views/tools/Drag/VueDrrTool'),
-            meta: {
-              title: '组件拖拽'
-            }
-          }
-        ]
-      },
-      {
-        path: 'transfer',
-        name: 'Transfer',
-        component: () => import('../views/tools/TransferPage'),
-        meta: {
-          title: '穿梭框'
-        }
-      },
-      {
-        path: 'count-to',
-        name: 'CountTo',
-        component: () => import('../views/tools/CountToPage'),
-        meta: {
-          title: '数字滚动'
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/tools',
+  //   name: 'Tools',
+  //   component: Layout,
+  //   redirect: '/tools/image-upload',
+  //   meta: {
+  //     title: '组件',
+  //     icon: 'vue-dsn-icon-zujian'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'image-upload',
+  //       name: 'ImageUpload',
+  //       component: () => import('../views/tools/ImageUpload'),
+  //       meta: {
+  //         title: '图片上传'
+  //       }
+  //     },
+  //     {
+  //       path: 'drag',
+  //       name: 'Drag',
+  //       component: () => import('../views/tools/Drag'),
+  //       redirect: '/tools/drag/drag-list',
+  //       meta: {
+  //         title: '拖拽'
+  //       },
+  //       children: [
+  //         {
+  //           path: 'drag-list',
+  //           name: 'DragList',
+  //           component: () => import('../views/tools/Drag/DragList'),
+  //           meta: {
+  //             title: '列表拖拽'
+  //           }
+  //         },
+  //         {
+  //           path: 'vue-drr',
+  //           name: 'VueDrr',
+  //           component: () => import('../views/tools/Drag/VueDrrTool'),
+  //           meta: {
+  //             title: '组件拖拽'
+  //           }
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'transfer',
+  //       name: 'Transfer',
+  //       component: () => import('../views/tools/TransferPage'),
+  //       meta: {
+  //         title: '穿梭框'
+  //       }
+  //     },
+  //     {
+  //       path: 'count-to',
+  //       name: 'CountTo',
+  //       component: () => import('../views/tools/CountToPage'),
+  //       meta: {
+  //         title: '数字滚动'
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/editors',
     name: 'Editors',
@@ -257,60 +257,4 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/excel',
-    name: 'Excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    meta: {
-      title: 'Excel',
-      icon: 'vue-dsn-icon-excel'
-    },
-    children: [
-      {
-        path: 'export-excel',
-        name: 'ExportExcel',
-        component: () => import('../views/excel/ExportExcel'),
-        meta: {
-          title: '导出Excel'
-        }
-      },
-      {
-        path: 'import-excel',
-        name: 'ImportExcel',
-        component: () => import('../views/excel/ImportExcel'),
-        meta: {
-          title: '导入Excel'
-        }
-      }
-    ]
-  },
-  {
-    path: '/error-page',
-    name: 'ErrorPage',
-    component: Layout,
-    redirect: '/error-page/page-401',
-    meta: {
-      title: '错误页面',
-      icon: 'vue-dsn-icon-bug'
-    },
-    children: [
-      {
-        path: 'page-401',
-        name: 'Page401',
-        component: () => import('../views/error-page/401'),
-        meta: {
-          title: '401页面'
-        }
-      },
-      {
-        path: 'page-404',
-        name: 'Page404',
-        component: () => import('../views/error-page/404'),
-        meta: {
-          title: '404页面'
-        }
-      }
-    ]
-  }
 ]
