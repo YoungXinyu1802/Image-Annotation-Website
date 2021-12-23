@@ -201,6 +201,9 @@ export default {
   created() {
     this.fetchData()
   },
+  mounted(){
+    this.fetchData()
+  },
   methods: {
     // 多选操作
     handleSelectionChange(val) {
