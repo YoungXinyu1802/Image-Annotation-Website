@@ -2,7 +2,7 @@ import router from './index'
 import { getToken } from '../utils/cookie'
 
 // 白名单列表
-const whiteList = ['/login']
+const whiteList = ['/login', '/signup']
 
 router.beforeEach((to, from, next) => {
   if (getToken()) {

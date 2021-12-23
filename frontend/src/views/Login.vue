@@ -2,24 +2,26 @@
   <div class="login-wrapper" :style="'background-image:url('+ Background +')'">
     <div class="form-box">
       <div class="form-title">
-        <img src="../assets/img/logo2.png" alt="icon">
-        <p>账 号 登 录</p>
+        <img src="../assets/img/login-logo.png" alt="icon" class="img">
+        <h3 class="title">数据集标注网站</h3>
+<!--        <p>数据集标注网站</p>-->
       </div>
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-width="0px" class="login-form">
         <el-form-item prop="username">
-          <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="请输入账号" prefix-icon="el-icon-user" />
+          <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="用户名/邮箱" prefix-icon="el-icon-user" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="请输入密码" prefix-icon="el-icon-lock" @keyup.enter.native="handleLogin" />
-        </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="loginForm.rememberMe">记住我</el-checkbox>
+          <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" prefix-icon="el-icon-lock" @keyup.enter.native="handleLogin" />
         </el-form-item>
         <el-form-item>
           <el-button :loading="loading" size="small" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
             <span v-if="!loading">登 录</span>
             <span v-else>登 录 中...</span>
           </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-link type="primary" style = "float:right" @click="signup('loginForm')">前往注册</el-link>
+<!--          <el-checkbox v-model="loginForm.rememberMe">记住我</el-checkbox>-->
         </el-form-item>
       </el-form>
     </div>
@@ -39,12 +41,12 @@ export default {
     return {
       Background,
       loginForm: {
-        username: 'admin',
-        password: 'admin123',
+        username: '',
+        password: '',
         rememberMe: true
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
+        username: [{ required: true, trigger: 'blur', message: '用户名或邮箱不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
       },
       loading: false,
@@ -100,6 +102,9 @@ export default {
           )
         }
       })
+    },
+    signup(){
+      this.$router.push({ path: '/signup'})
     }
   }
 }
@@ -126,6 +131,12 @@ export default {
       font-size: 18px;
       letter-spacing: 2px;
     }
+  }
+  .title{
+    margin-top: 5px
+  }
+  .img{
+    width: 100px
   }
 }
 </style>

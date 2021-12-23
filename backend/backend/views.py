@@ -63,7 +63,7 @@ def signup(request):
 
     if(date_msg == ''):
         try:
-            user = models.User(user_name=_username, email=_email, password=_password)
+            user = models.UserInfo(user_name=_username, email=_email, password=_password)
             user.save()
             date_msg = "success"
             date_flag = "yes"

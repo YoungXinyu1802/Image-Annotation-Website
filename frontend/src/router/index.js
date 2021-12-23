@@ -23,6 +23,13 @@ export const constantRoutes = [
     meta: { title: '登录' }
   },
   {
+    path: '/signup',
+    name: 'Signup',
+    component: () => import('../views/Signup'),
+    hidden: true,
+    meta: { title: '注册' }
+  },
+  {
     path: '401',
     name: '401',
     component: () => import('../views/error-page/401'),
