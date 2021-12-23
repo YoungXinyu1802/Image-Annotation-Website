@@ -253,8 +253,8 @@ def createTask(request):
 
 @csrf_exempt
 def getTasklist(request):
-    username = request.POST.get('username')
-    print(username)
+    # username = request.POST.get('username')
+    # print(username)
     data = models.Task.objects.all().values()
     # print(data)
     # data = models.Task.objects.filter(publish_user_id=username).values()
@@ -266,7 +266,6 @@ def getTasklist(request):
 
 @csrf_exempt
 def getImglist(request):
-
     username = request.POST.get('username')
     database = request.POST.get('database')
     print(username)
@@ -285,3 +284,15 @@ def getImglist(request):
         b64.append(str(s)[2 : len(str(s)) - 1])
     print(ok(b64))
     return ok(b64)
+
+@csrf_exempt
+def claimTask(request):
+    username = request.POST.get('username')
+    taskname = request.POST.get('taskname')
+    print(username)
+    print(taskname)
+    task = models.Task.objects.get(task_name = taskname)
+    task.claim_user = models.UserInfo.objects.get(user_name = username)
+    task.status = '已领取'
+    task.save()
+    return ok("success")

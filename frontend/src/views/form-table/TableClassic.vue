@@ -8,39 +8,39 @@
       </template>
     </Hints>
     <el-card shadow="always">
-      <!-- 操作栏 -->
-      <div class="control-btns">
-        <el-button type="primary" @click="handleCreate">新建数据</el-button>
-        <el-button type="primary" @click="handleImport">导入数据</el-button>
-        <el-button type="primary" @click="exportVisible = true">导出数据</el-button>
-        <el-button type="danger" @click="batchDelete">批量删除</el-button>
-      </div>
-      <!-- 查询栏 -->
-      <el-form
-        ref="searchForm"
-        :inline="true"
-        :model="listQuery"
-        label-width="90px"
-        class="search-form"
-      >
-        <el-form-item label="编号">
-          <el-input v-model="listQuery.id" placeholder="编号" />
-        </el-form-item>
-        <el-form-item label="手机">
-          <el-input v-model="listQuery.phone" placeholder="手机" />
-        </el-form-item>
-        <el-form-item label="婚姻状况">
-          <el-select v-model="listQuery.married" placeholder="婚姻状况">
-            <el-option :value="0" label="单身" />
-            <el-option :value="1" label="未婚" />
-            <el-option :value="2" label="已婚" />
-            <el-option :value="3" label="离异" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
-        </el-form-item>
-      </el-form>
+<!--      &lt;!&ndash; 操作栏 &ndash;&gt;-->
+<!--      <div class="control-btns">-->
+<!--        <el-button type="primary" @click="handleCreate">新建数据</el-button>-->
+<!--        <el-button type="primary" @click="handleImport">导入数据</el-button>-->
+<!--        <el-button type="primary" @click="exportVisible = true">导出数据</el-button>-->
+<!--        <el-button type="danger" @click="batchDelete">批量删除</el-button>-->
+<!--      </div>-->
+<!--      &lt;!&ndash; 查询栏 &ndash;&gt;-->
+<!--      <el-form-->
+<!--        ref="searchForm"-->
+<!--        :inline="true"-->
+<!--        :model="listQuery"-->
+<!--        label-width="90px"-->
+<!--        class="search-form"-->
+<!--      >-->
+<!--        <el-form-item label="编号">-->
+<!--          <el-input v-model="listQuery.id" placeholder="编号" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="手机">-->
+<!--          <el-input v-model="listQuery.phone" placeholder="手机" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="婚姻状况">-->
+<!--          <el-select v-model="listQuery.married" placeholder="婚姻状况">-->
+<!--            <el-option :value="0" label="单身" />-->
+<!--            <el-option :value="1" label="未婚" />-->
+<!--            <el-option :value="2" label="已婚" />-->
+<!--            <el-option :value="3" label="离异" />-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item>-->
+<!--          <el-button type="primary" @click="onSubmit">查询</el-button>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
       <!-- 表格栏 -->
       <el-table
         ref="multipleTable"
@@ -53,23 +53,32 @@
       >
         <el-table-column type="selection" width="60" />
         <el-table-column prop="id" label="编号" align="center" width="120" sortable />
-        <el-table-column prop="publish_user_id" label="发布者" align="center">
+        <el-table-column prop="task_name" label="任务名" align="center">
         </el-table-column>
-        <el-table-column label="性别" align="center">
-          <template slot-scope="scope">{{ scope.row.sex }}</template>
-        </el-table-column>
-        <el-table-column prop="phone" label="手机" align="center" />
-        <el-table-column prop="education" label="学历" align="center" />
-        <el-table-column label="禁止编辑" align="center">
+
+        <el-table-column prop="publish_user_id" label="发布者" align="center" />
+        <el-table-column label="任务描述" align="center">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.forbid" @change="stateChange(scope.row)" />
+          <el-button size="mini" :disabled="scope.row.forbid" @click="handleEdit(scope.$index, scope.row)">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="hobby" label="爱好" align="center" width="300" show-overflow-tooltip />
+
+
+        <el-table-column prop="status" label="任务状态" align="center" />
+        <el-table-column prop="claim_user_id" label="领取者" align="center" />
+<!--        <el-table-column label="禁止编辑" align="center">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-switch v-model="scope.row.forbid" @change="stateChange(scope.row)" />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="hobby" label="爱好" align="center" width="300" show-overflow-tooltip />-->
+
         <el-table-column label="操作" align="center" width="200">
           <template slot-scope="scope">
-            <el-button size="mini" :disabled="scope.row.forbid" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+
+
+            <el-button type='primary' @click="claimTask(scope.$index, scope.row)">领取</el-button>
+            <!--            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -77,7 +86,7 @@
       <Pagination :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="fetchData" />
       <!-- 新增/编辑 弹出栏 -->
       <el-dialog
-        title="编辑"
+        title="任务描述"
         :visible.sync="formVisible"
         width="30%"
         class="dialog-form"
@@ -89,16 +98,7 @@
           :rules="formRules"
           label-width="100px"
         >
-          <el-form-item label="姓名：" prop="name">
-            <el-input v-model="dialogForm.name" />
-          </el-form-item>
-          <el-form-item label="手机：" prop="phone">
-            <el-input v-model="dialogForm.phone" />
-          </el-form-item>
-          <div class="footer-item">
-            <el-button @click="cancleForm">取 消</el-button>
-            <el-button type="primary" :disabled="isSubmit" @click="submitForm('dialogForm')">确 定</el-button>
-          </div>
+            <el-input v-model="dialogForm.desc" />
         </el-form>
       </el-dialog>
       <!-- 导入数据 弹出栏 -->
@@ -152,6 +152,7 @@ export default {
   data() {
     return {
       // 数据列表加载动画
+      username: localStorage.getItem('username'),
       listLoading: true,
       // 查询列表参数对象
       listQuery: {
@@ -163,10 +164,11 @@ export default {
       },
       // 新增/编辑提交表单对象
       dialogForm: {
-        name: undefined,
-        phone: undefined,
-        married: undefined,
-        hobby: []
+        desc: undefined
+        // name: undefined,
+        // phone: undefined,
+        // married: undefined,
+        // hobby: []
       },
       // 数据总条数
       total: 0,
@@ -216,10 +218,10 @@ export default {
     handleEdit(index, row) {
       console.log(index, row)
       this.formVisible = true
-      this.dialogForm.name = row.name
-      this.dialogForm.phone = row.phone
-      this.dialogForm.married = row.married
-      this.dialogForm.hobby = row.hobby.split('、')
+      this.dialogForm.desc = row.description
+      // this.dialogForm.phone = row.phone
+      // this.dialogForm.married = row.married
+      // this.dialogForm.hobby = row.hobby.split('、')
     },
     // 删除数据
     handleDelete(index, row) {
@@ -282,6 +284,20 @@ export default {
         this.listLoading = false
       })
     },
+    claimTask(index, row){
+      var parm = Qs.stringify({
+        'username': this.username,
+        'taskname': row.task_name,
+      })
+      console.log('claim')
+      console.log(this.username)
+      console.log(parm)
+      axios.post('http://127.0.0.1:8000/api/claimTask', parm).then(res => {
+
+      })
+      this.fetchData()
+    },
+
     // 查询数据
     onSubmit() {
       this.listQuery.currentPage = 1
