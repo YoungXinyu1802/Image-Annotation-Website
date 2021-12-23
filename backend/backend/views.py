@@ -269,7 +269,8 @@ def getImglist(request):
 
     username = request.POST.get('username')
     database = request.POST.get('database')
-    url = os.path.join(MEDIA_ROOT, 'yxy1802', 'database', 'bee').replace('\\', '/')
+    print(username)
+    url = os.path.join(MEDIA_ROOT, username, 'database', 'bee').replace('\\', '/')
     print(url)
     imglist = os.listdir(url)
     imgNum = len(imglist)

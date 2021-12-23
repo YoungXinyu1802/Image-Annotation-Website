@@ -9,7 +9,7 @@
             v-for="item in dataList"
           ></el-option>
         </el-select>
-        <el-button type="primary" style="margin-left: 20px">选择</el-button>
+        <el-button type="primary" style="margin-left: 20px" @click="getImg()">选择</el-button>
       </el-form-item>
 
       <el-form-item label="图片筛选：">
@@ -30,13 +30,14 @@
       <div class="pic-container">
         <div class="pic-box" ref="picContainer">
           <div class = 'pic' v-for = "(v, i) in imglist">
-            <img :src = "'data:img/jpg;base64,' + v">
+            <img :src = "'data:img/jpg;base64,' + v"
+            @click="activePic('data:img/jpg;base64,' + v)">
           </div>
 
 <!--          <div class="pic" v-for="(v, i) in pics" :key="i">-->
 <!--            <div-->
 <!--              class="info"-->
-<!--              :style="{ 'background-image': 'url(' + v.cropImage + ')' }"-->
+<!--              :style="{ 'background-image': 'data:img/jpg;base64,' + v.cropImage }"-->
 <!--              @click="activePic(v.cropImage)"-->
 <!--            ></div>-->
 <!--          </div>-->
@@ -110,6 +111,7 @@ export default {
   components: { 'ui-marker': AIMarker },
   data() {
     return {
+      username: localStorage.getItem('username'),
       formInline: {
         region: '',
         radio: '全部'
@@ -123,7 +125,7 @@ export default {
       // 当前图片的信息，包含图片原本的高矮胖瘦尺寸
       currentInfo: {
         currentBaseImage:
-          'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg',
+          '',
         rawW: 0,
         rawH: 0,
         currentW: 0,
@@ -135,24 +137,24 @@ export default {
 
       // *****************************
       pics: [
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
-        },
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
-        },
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
-        },
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
-        },
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50050/5027.jpg_wh1200.jpg'
-        },
-        {
-          cropImage: 'https://seopic.699pic.com/photo/50140/6207.jpg_wh1200.jpg'
-        }
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
+        // },
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
+        // },
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
+        // },
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
+        // },
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50050/5027.jpg_wh1200.jpg'
+        // },
+        // {
+        //   cropImage: 'https://seopic.699pic.com/photo/50140/6207.jpg_wh1200.jpg'
+        // }
       ],
       active: 0, // 当前图片序号
       picTotal: 10, // 照片总数
@@ -195,27 +197,43 @@ export default {
     }
   },
   create(){
-    let parm = Qs.stringify({'username': localStorage.getItem('username')})
-    getImgList(parm).then(res => {
-
-    })
+    // this.username = localStorage.getItem("username")
+    // let parm = Qs.stringify({'username': localStorage.getItem('username')})
+    // getImgList(parm).then(res => {
+    //
+    // })
   },
   mounted() {
-    let parm = Qs.stringify({'username': localStorage.getItem('username')})
-    console.log(parm)
-    getImgList(parm).then(res => {
-      console.log(res.data.code)
-      this.imglist = res.data.data
-      console.log(this.imglist)
+    // let parm = Qs.stringify({
+    //   'username': this.username,
+    //   // 'user_name': localStorage.getItem("username"),
+    // })
+    // console.log('mounted')
+    // console.log(parm)
+    // getImgList(parm).then(res => {
+    //   console.log(res.data.code)
+    //   this.imglist = res.data.data
+    //   console.log(this.imglist)
+    //
+    // })
 
-    })
+    console.log('mounted')
+      let parm = Qs.stringify({
+        'username': this.username,
+      })
+      axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
+        this.imglist = resp.data.data
+      })
 
-    this.onImageLoad()
+    console.log(this.pics)
+
+    // this.onImageLoad()
 
   },
   methods: {
     /**记录图片当前的大小和原始大小 data={rawW,rawH,currentW,currentH} */
     onImageLoad(data) {
+      console.log('data')
       console.log(data)
       this.imageInfo = data
     },
@@ -239,6 +257,13 @@ export default {
       this.$refs['innerForm'].resetFields()
       done()
     },
+    getImg(){
+      let parm = Qs.stringify({
+        'username': this.username,
+      })
+      axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {})
+    },
+
     createForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -388,7 +413,11 @@ export default {
     },
     /**得到当前点击图片*/
     activePic(v) {
+      console.log('active')
       this.currentInfo.currentBaseImage = v
+      let im = new Image;
+      im.src = v
+      this.imageInfo = {rawW: im.width, rawH: im.height}
     },
 
     handleChange(label) {
