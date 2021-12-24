@@ -20,14 +20,6 @@ class UserInfo(models.Model):
     def __str__(self):
         return self.user_name
 
-class Task(models.Model):
-    publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
-    task_name = models.CharField(max_length=20, default="NULL")
-    description = models.TextField(max_length=1000, default="NULL")
-    claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
-    status = models.CharField(max_length=20, default="未领取")
-
-
 def getURL(instance, filename):
     imgName = instance.publish_user.user_name
     print(imgName)
@@ -36,5 +28,16 @@ def getURL(instance, filename):
 class LabelImg(models.Model):
     publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='user_img')
     status = models.CharField(max_length=20, default="未标注")
-    task_name = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, related_name='img_task')
     img = models.ImageField(upload_to=getURL, max_length=1000)
+
+
+class Task(models.Model):
+    publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
+    task_name = models.CharField(max_length=20, default="NULL")
+    description = models.TextField(max_length=1000, default="NULL")
+    claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
+    status = models.CharField(max_length=20, default="未领取")
+    img = models.ForeignKey(LabelImg, null=True, on_delete=models.CASCADE, related_name='task_img')
+
+
+

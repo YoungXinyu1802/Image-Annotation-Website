@@ -135,12 +135,14 @@ export default {
       onSubmit() {
         console.log('submit!');
         console.log(this.username)
+        console.log(this.checkList)
 
         let parm = Qs.stringify({
           'username': this.username,
           'taskname': this.task.name,
-          'desc': this.task.desc
-        })
+          'desc': this.task.desc,
+          'imglist': this.checkList
+        }, {indices: false})
 
         axios.post('http://127.0.0.1:8000/api/createTask', parm).then(resp => {
 

@@ -214,6 +214,11 @@ export default {
     }
   },
   create(){
+    // let parm = Qs.stringify(({'username': this.username}))
+    // axios.post('http://127.0.0.1:8000/api/getLabelImg', parm).then(res =>{
+    //
+    // })
+
     // this.username = localStorage.getItem("username")
     // let parm = Qs.stringify({'username': localStorage.getItem('username')})
     // getImgList(parm).then(res => {

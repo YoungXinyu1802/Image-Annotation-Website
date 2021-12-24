@@ -239,22 +239,23 @@ def video2img(request):
 
 @csrf_exempt
 def createTask(request):
+    print('createTask')
     username = request.POST.get("username")
+    print(username)
     # dynamicTags = request.POST.get("dynamicTags")
     taskname = request.POST.get("taskname")
     desc = request.POST.get("desc")
-    # resource = request.POST.get("resource")
-    # imgs = request.POST.get("imgs")
     print(username)
-    # print(type)
-    # print(dynamicTags)
-    # print(resource)
-    # print(imgs)
+    imglist = request.POST.getlist("imglist")
+    print(imglist)
+    for img in imglist:
+        img_dir= os.path.join(MEDIA_ROOT, username, 'database',img).replace('\\', '/')
+        print(img_dir)
+        img_object = models.LabelImg.objects.get(img=img_dir)
+        task = models.Task(publish_user_id = username, task_name = taskname, description=desc, img=img_object)
+        task.save()
 
-    task = models.Task(publish_user_id = username, task_name = taskname, description=desc)
-    task.save()
-
-    return ok(username)
+    return ok({})
 
 @csrf_exempt
 def getTasklist(request):
@@ -262,6 +263,7 @@ def getTasklist(request):
     # print(username)
     data = models.Task.objects.all().values()
     # print(data)
+    # data = models.Task.objects.values('task_name').distinct()
     # data = models.Task.objects.filter(publish_user_id=username).values()
     # print(data[0])
     contents = list(data)
@@ -274,32 +276,33 @@ def getImglist(request):
     username = request.POST.get('username')
     database = request.POST.get('database')
     print(username)
-    url = os.path.join(MEDIA_ROOT, username, 'database', 'bee').replace('\\', '/')
-    print(url)
-    imglist = os.listdir(url)
-    imgNum = len(imglist)
-    print(imgNum)
-    print(imglist)
+    taskname = 'newTask'
+    imgs = models.Task.objects.filter(task_name=taskname).values('img_id')
+    print(imgs)
     b64 = []
-    for img in imglist:
-        print(img)
-        f = open(url + '/' + img, 'rb')
+    for i in imgs:
+        img = models.LabelImg.objects.get(id=i.get('img_id'))
+        print(img.img)
+        print(str(img.img))
+        f = open(str(img.img), 'rb')
         res = f.read()
         s = base64.b64encode(res)
-        b64.append(str(s)[2 : len(str(s)) - 1])
-    print(ok(b64))
+        b64.append(str(s)[2: len(str(s)) - 1])
+    print(b64)
     return ok(b64)
 
 @csrf_exempt
 def claimTask(request):
     username = request.POST.get('username')
     taskname = request.POST.get('taskname')
+    print('claim task')
     print(username)
     print(taskname)
-    task = models.Task.objects.get(task_name = taskname)
-    task.claim_user = models.UserInfo.objects.get(user_name = username)
-    task.status = '已领取'
-    task.save()
+    task = models.Task.objects.filter(task_name = taskname)
+    for t in task:
+        t.claim_user = models.UserInfo.objects.get(user_name = username)
+        t.status = '已领取'
+        t.save()
     return ok("success")
 
 
@@ -324,7 +327,30 @@ def getTaskImg(request):
         s = str(s)[2: len(str(s)) - 1]
         imgname.append(img)
         imgb64.append(s)
-    print(imgname)
-    print(imgb64)
     return JsonResponse({'code': 0, 'filename': imgname, 'base64': imgb64})
-    # return JsonResponse({'code': 0, 'message': imgname, 'base64': [4, 5, 5]})
+
+@csrf_exempt
+def getLabelImg(request):
+    username = request.POST.get('username')
+    # taskname = request.POST.get('taskname')
+    taskname = 'newTask'
+    print(username)
+    print(taskname)
+    imgs = models.Task.objects.filter(task_name=taskname).values('img_id')
+    for i in imgs:
+        img = models.LabelImg.objects.get(img=i)
+        print(img)
+    # imgNum = len(imglist)
+    # print(imgNum)
+    # print(imglist)
+    # imgname = []
+    # imgb64 = []
+    # for img in imglist:
+    #     print(img)
+    #     f = open(url + '/' + img, 'rb')
+    #     res = f.read()
+    #     s = base64.b64encode(res)
+    #     s = str(s)[2: len(str(s)) - 1]
+    #     imgname.append(img)
+    #     imgb64.append(s)
+    return JsonResponse({'code': 0, 'filename': imgname, 'base64': imgb64})
