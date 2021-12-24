@@ -14,6 +14,7 @@ MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backen
 def ok(data: object):
     return JsonResponse({'code': 0, 'message': '操作成功', 'data': data})
 
+#登录验证
 @csrf_exempt
 def login(request):
     username = request.POST.get("username")
@@ -36,6 +37,7 @@ def login(request):
     date = {'flag': date_msg, 'msg': userinfo}
     return JsonResponse({'request': date})
 
+# 注册时创建文件夹
 def createUserFolder(username):
     filename = ['database', 'task']
     for f in filename:
@@ -45,6 +47,7 @@ def createUserFolder(username):
             os.makedirs(url)
     print('create success')
 
+#注册
 @csrf_exempt
 def signup(request):
     _username = request.POST.get("username")
@@ -164,7 +167,7 @@ def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
     tree.write('pascal.xml', pretty_print=True)
 
 
-
+# 导出图片标签
 @csrf_exempt
 def label(request):
     _filename = request.POST.get("filename")
@@ -187,6 +190,7 @@ def label(request):
     toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags)
     return JsonResponse({'request': info})
 
+# 上传任务
 @csrf_exempt
 def upload(request):
     print('get')
@@ -236,7 +240,7 @@ def video2img(request):
         index += 1
     return ok(imgsrc)
 
-
+# 创建任务
 @csrf_exempt
 def createTask(request):
     print('createTask')
@@ -257,6 +261,7 @@ def createTask(request):
 
     return ok({})
 
+# 任务列表
 @csrf_exempt
 def getTasklist(request):
     # username = request.POST.get('username')
@@ -271,6 +276,7 @@ def getTasklist(request):
     print(ok(contents))
     return ok(contents)
 
+# 标注界面的图片
 @csrf_exempt
 def getImglist(request):
     username = request.POST.get('username')
@@ -291,6 +297,7 @@ def getImglist(request):
     print(b64)
     return ok(b64)
 
+# 领取任务
 @csrf_exempt
 def claimTask(request):
     username = request.POST.get('username')
@@ -305,7 +312,7 @@ def claimTask(request):
         t.save()
     return ok("success")
 
-
+# 创建任务时显示图片
 @csrf_exempt
 def getTaskImg(request):
     username = request.POST.get('username')
@@ -330,27 +337,13 @@ def getTaskImg(request):
     return JsonResponse({'code': 0, 'filename': imgname, 'base64': imgb64})
 
 @csrf_exempt
-def getLabelImg(request):
+def getUserTask(request):
     username = request.POST.get('username')
-    # taskname = request.POST.get('taskname')
-    taskname = 'newTask'
+    task = models.Task.objects.filter(claim_user_id=username).values('task_name').distinct()
+    tasklist = []
+    for i in task:
+        t = i['task_name']
+        tasklist.append(t)
     print(username)
-    print(taskname)
-    imgs = models.Task.objects.filter(task_name=taskname).values('img_id')
-    for i in imgs:
-        img = models.LabelImg.objects.get(img=i)
-        print(img)
-    # imgNum = len(imglist)
-    # print(imgNum)
-    # print(imglist)
-    # imgname = []
-    # imgb64 = []
-    # for img in imglist:
-    #     print(img)
-    #     f = open(url + '/' + img, 'rb')
-    #     res = f.read()
-    #     s = base64.b64encode(res)
-    #     s = str(s)[2: len(str(s)) - 1]
-    #     imgname.append(img)
-    #     imgb64.append(s)
-    return JsonResponse({'code': 0, 'filename': imgname, 'base64': imgb64})
+    print(tasklist)
+    return ok(tasklist)

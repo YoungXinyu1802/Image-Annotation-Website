@@ -9,8 +9,8 @@
 
       <div>
     <el-form :model="formInline">
-      <el-form-item label="数据集：">
-        <el-select v-model="formInline.region" placeholder="选择数据集">
+      <el-form-item label="任务：">
+        <el-select v-model="formInline.region" placeholder="选择任务">
           <el-option
             :label="item.name"
             :value="item.code"
@@ -20,13 +20,13 @@
         <el-button type="primary" style="margin-left: 20px" @click="getImg()">选择</el-button>
       </el-form-item>
 
-      <el-form-item label="图片筛选：">
-        <el-radio-group v-model="formInline.radio" @change="handleChange">
-          <el-radio-button label="全部"></el-radio-button>
-          <el-radio-button label="未标注"></el-radio-button>
-          <el-radio-button label="已标注"></el-radio-button>
-        </el-radio-group>
-      </el-form-item>
+<!--      <el-form-item label="图片筛选：">-->
+<!--        <el-radio-group v-model="formInline.radio" @change="handleChange">-->
+<!--          <el-radio-button label="全部"></el-radio-button>-->
+<!--          <el-radio-button label="未标注"></el-radio-button>-->
+<!--          <el-radio-button label="已标注"></el-radio-button>-->
+<!--        </el-radio-group>-->
+<!--      </el-form-item>-->
       <!-- <el-form-item>
         <el-button type="primary">选择</el-button>
       </el-form-item> -->
@@ -133,10 +133,7 @@ export default {
         region: '',
         radio: '全部'
       },
-      dataList: [
-        { name: '安全帽', code: 1 },
-        { name: '火焰', code: 2 }
-      ],
+      dataList: [],
 
       uuid: '0da9130',
       // 当前图片的信息，包含图片原本的高矮胖瘦尺寸
@@ -214,16 +211,6 @@ export default {
     }
   },
   create(){
-    // let parm = Qs.stringify(({'username': this.username}))
-    // axios.post('http://127.0.0.1:8000/api/getLabelImg', parm).then(res =>{
-    //
-    // })
-
-    // this.username = localStorage.getItem("username")
-    // let parm = Qs.stringify({'username': localStorage.getItem('username')})
-    // getImgList(parm).then(res => {
-    //
-    // })
   },
   mounted() {
     // let parm = Qs.stringify({
@@ -238,18 +225,29 @@ export default {
     //   console.log(this.imglist)
     //
     // })
+    let parm = Qs.stringify(({'username': this.username}))
+    const _this = this
+    axios.post('http://127.0.0.1:8000/api/getUserTask', parm).then(
+      function(res) {
+        console.log(res.data.data)
+        for (let i = 0; i < res.data.data.length; i++) {
+          let temp = {name: res.data.data[i], code: i}
+          _this.dataList.push(temp)
+        }
+      }
+    )
+    console.log(this.dataList)
 
-    console.log('mounted')
-      let parm = Qs.stringify({
-        'username': this.username,
-      })
-      axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
-        this.imglist = resp.data.data
-      })
 
-    console.log(this.pics)
-
-    // this.onImageLoad()
+    // console.log('mounted')
+    //   let parm = Qs.stringify({
+    //     'username': this.username,
+    //   })
+    //   axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
+    //     this.imglist = resp.data.data
+    //   })
+    //
+    // console.log(this.pics)
 
   },
   methods: {
@@ -282,8 +280,11 @@ export default {
     getImg(){
       let parm = Qs.stringify({
         'username': this.username,
+        'taskname': this.taskname
       })
-      axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {})
+      axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
+        this.imglist = resp.data.data
+      })
     },
 
     createForm(formName) {

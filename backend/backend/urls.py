@@ -12,6 +12,6 @@ urlpatterns = [
     re_path(r'getImglist$', views.getImglist),
     re_path(r'claimTask$', views.claimTask),
     re_path(r'getTaskImg$', views.getTaskImg),
-    re_path(r'getLabelImg$', views.getLabelImg)
+    re_path(r'getUserTask$', views.getUserTask)
     # re_path(r'show_users$', views.show_users, ),
 ]
