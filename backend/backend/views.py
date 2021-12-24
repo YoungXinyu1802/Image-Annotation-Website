@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 # from models import User
 # from models import Goods
-MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/upload_file/uploads/')
+MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/Admin')
 def ok(data: object):
     return JsonResponse({'code': 0, 'message': '操作成功', 'data': data})
 
@@ -30,32 +30,20 @@ def login(request):
     print(userinfo)
     if password == userinfo.get('password', 'null'):
         date_msg = "success"
-        # date_flag = "yes"
         print('成功')
     else:
         date_msg = 'pwdError'
-        # date_flag = 'no'
     date = {'flag': date_msg, 'msg': userinfo}
     return JsonResponse({'request': date})
 
-    # try:
-    #     user = models.UserInfo.objects.get(user_name=username)
-    #     print(user)
-    # except:
-    #     date = {'flag': 'no', 'msg': 'noUser'}
-    #     print("noUser")
-    #     return JsonResponse({'request':date})
-
-    # if password == user.password:
-    #     date_msg = "success"
-    #     date_flag = "yes"
-    #     print('成功')
-    # else:
-    #     date_msg = 'pwdError'
-    #     date_flag = 'no'
-    # date = {'flag': date_flag, 'msg': date_msg}
-    #
-    # return JsonResponse({'request':date})
+def createUserFolder(username):
+    filename = ['database', 'task']
+    for f in filename:
+        url = os.path.join(MEDIA_ROOT, username, f).replace('\\', '/')
+        if not os.path.exists(url):
+            print('create')
+            os.makedirs(url)
+    print('create success')
 
 @csrf_exempt
 def signup(request):
@@ -84,6 +72,7 @@ def signup(request):
         try:
             user = models.UserInfo(user_name=_username, email=_email, password=_password)
             user.save()
+            createUserFolder(_username)
             date_msg = "success"
             date_flag = "yes"
         except:
@@ -95,7 +84,6 @@ def signup(request):
     return JsonResponse({'request': date})
 
 def toCreateML(filename, xmin, ymin, xmax, ymax, tags):
-    res = []
     image_name = filename
     annotations = []
     for i in range(len(xmin)):
@@ -119,7 +107,7 @@ def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
     child1.text = 'VOCtype'
 
     child2 = etree.SubElement(root, 'filename')
-    child2.text = '000001.jpg'
+    child2.text = filename
 
     child3 = etree.SubElement(root, 'source')
 
@@ -202,32 +190,13 @@ def label(request):
 @csrf_exempt
 def upload(request):
     print('get')
-    # token = signing.loads((request.META.get('HTTP_ANNOTATE_SYSTEM_TOKEN')))
-    # print(token)
     print('get id')
     username = request.POST.get("username")
-    database = request.POST.get("database")
     print(username)
-    # user_id = token['id']
-    file=request.FILES.getlist("file")
+    file=request.FILES.get("file")
     print(file)
-
-    for f in file:
-        img_url = os.path.join(MEDIA_ROOT, username, 'database', database).replace('\\', '/')
-        print(img_url)
-        print(os.path.exists(img_url))
-        if not os.path.exists(img_url):
-            print('create')
-            os.makedirs(img_url)
-        # new_img = models.LabelImg(img=file, publish_user_id=username)
-        # new_img.save()
-        _img_url = img_url + '/' + str(f)
-        with open(_img_url, 'wb') as dest:
-            for chunk in f.chunks():
-                dest.write(chunk)
-                print('load')
-        new_img = models.LabelImg(img=_img_url)
-        new_img.save()
+    new_img = models.LabelImg(img=file, publish_user_id=username)
+    new_img.save()
 
     # img_list = []
     # for img in models.LabelImg.objects.filter(publish_user_id=username):
@@ -332,3 +301,25 @@ def claimTask(request):
     task.status = '已领取'
     task.save()
     return ok("success")
+
+
+@csrf_exempt
+def getUserImg(request):
+    username = request.POST.get('username')
+    database = request.POST.get('database')
+    print(username)
+    url = os.path.join(MEDIA_ROOT, username, 'database', 'bee').replace('\\', '/')
+    print(url)
+    imglist = os.listdir(url)
+    imgNum = len(imglist)
+    print(imgNum)
+    print(imglist)
+    b64 = []
+    for img in imglist:
+        print(img)
+        f = open(url + '/' + img, 'rb')
+        res = f.read()
+        s = base64.b64encode(res)
+        b64.append(str(s)[2 : len(str(s)) - 1])
+    print(ok(b64))
+    return ok(b64)

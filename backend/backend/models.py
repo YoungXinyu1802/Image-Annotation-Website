@@ -5,7 +5,7 @@ from django.db import models
 from pathlib import Path
 import os
 
-MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/upload_file/uploads/')
+MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/Admin')
 # Create your models here.
 class UserInfo(models.Model):
     user_name = models.CharField(primary_key=True, max_length=64)
@@ -27,26 +27,14 @@ class Task(models.Model):
     claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
     status = models.CharField(max_length=20, default="未领取")
 
-# class Database(models.Model):
-#     publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
-#     name = models.CharField(max_length=20, default="NULL")
+
+def getURL(instance, filename):
+    imgName = instance.publish_user.user_name
+    print(imgName)
+    return MEDIA_ROOT + '/%s/database/%s' % (imgName, filename)
 
 class LabelImg(models.Model):
-    # publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='publish_task')
-    # claim_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='claim_task')
-    # img = models.ImageField(upload_to='uploads/', max_length=1000)
-    # description = models.TextField(max_length=1000, default="NULL")
+    publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='user_img')
     status = models.CharField(max_length=20, default="未标注")
     task_name = models.ForeignKey(Task, null=True, on_delete=models.CASCADE, related_name='img_task')
-    img = models.ImageField(upload_to=MEDIA_ROOT +  '/img/', max_length=1000)
-
-
-    # def __str__(self):
-    #     return self.img.name
-
-
-
-
-
-
-
+    img = models.ImageField(upload_to=getURL, max_length=1000)
