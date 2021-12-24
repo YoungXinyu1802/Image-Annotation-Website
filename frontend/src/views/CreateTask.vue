@@ -38,13 +38,13 @@
       </el-form-item>
     </el-form>
     </el-card>
-    <el-dialog title="选择图片" :visible.sync="dialogTableVisible">
+    <el-dialog title="选择图片" :visible.sync="dialogTableVisible" @click="showImg">
       <el-checkbox-group
         v-model="checkList"
       >
         <el-checkbox v-for="v in imglist" :label="v.filename" :key="v.filename">
           {{v.filename}}
-          <div> <img :src = "v.url" alt="" class="img"></div>
+          <div> <img :src = "'data:img/jpg;base64,' + v.base64" alt="" class="img"></div>
         </el-checkbox>
       </el-checkbox-group>
 
@@ -62,20 +62,14 @@ import Hints from '../components/Hints'
 // import { selectData, cascaderData } from './data'
 import axios from 'axios'
 import Qs from 'qs'
+import {getTaskImg} from "../api";
 
 export default {
   name: 'Form',
   components: { Hints },
     data() {
       return {
-        imglist: [
-          { filename: 'hello',
-            url: 'https://seopic.699pic.com/photo/50050/5027.jpg_wh1200.jpg'
-          },
-          { filename: 'yes',
-            url: 'https://seopic.699pic.com/photo/50050/5027.jpg_wh1200.jpg'
-          }
-        ],
+        imglist: [],
         checkList: [],
         multipleSelection: [],
         username: localStorage.getItem('username'),
@@ -107,13 +101,33 @@ export default {
         },
         formLabelWidth: '120px'
       };
-
-
-
     },
+
+    created() {
+      this.showImg()
+    },
+
     methods: {
       selectImg(){
         console.log(this.checkList)
+        this.dialogTableVisible = false
+      },
+      showImg(){
+        console.log('show')
+        console.log(this.checkList)
+        let parm = Qs.stringify({'username': this.username})
+        let _this = this
+        axios.post('http://127.0.0.1:8000/api/getTaskImg', parm).then(
+          function (res) {
+            console.log(res.data)
+            const imgname = res.data.filename
+            const imgbase = res.data.base64
+            for ( let i = 0; i < res.data.filename.length; i++){
+              let temp = {filename: res.data.filename[i], base64: res.data.base64[i]}
+              _this.imglist.push(temp)
+            }
+            console.log(imgname)
+        })
       },
       handleSelectionChange(val) {
         this.multipleSelection = val
@@ -133,7 +147,6 @@ export default {
           }
         )
       },
-
 
       handleClose(tag) {
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
@@ -209,6 +222,7 @@ export default {
       handlePreview(file) {
         console.log(file);
       }
+
     },
   }
 </script>

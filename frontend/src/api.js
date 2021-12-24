@@ -16,3 +16,12 @@ export function getImgList(param) {
     param
   })
 }
+
+export function getTaskImg(param) {
+  console.log('post')
+  return axios({
+    url: 'http://127.0.0.1:8000/api/getTaskImg',
+    method: 'post',
+    param
+  })
+}
