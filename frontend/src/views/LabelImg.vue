@@ -8,7 +8,7 @@
     </Hints>
 
       <div>
-    <el-form :model="formInline">
+    <el-form :inline="true" :model="formInline">
       <el-form-item label="任务：">
         <el-select v-model="formInline.region" placeholder="选择任务">
           <el-option
@@ -20,16 +20,15 @@
         <el-button type="primary" style="margin-left: 20px" @click="getImg()">选择</el-button>
       </el-form-item>
 
-<!--      <el-form-item label="图片筛选：">-->
-<!--        <el-radio-group v-model="formInline.radio" @change="handleChange">-->
-<!--          <el-radio-button label="全部"></el-radio-button>-->
-<!--          <el-radio-button label="未标注"></el-radio-button>-->
-<!--          <el-radio-button label="已标注"></el-radio-button>-->
-<!--        </el-radio-group>-->
+      <el-form-item label="选择数据集：">
+       <el-radio-group v-model="formInline.radio" @change="handleChange">
+          <el-radio-button label="PascalVoc"></el-radio-button>
+          <el-radio-button label="createML"></el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+<!--      <el-form-item>-->
+<!--        <el-button type="primary">选择</el-button>-->
 <!--      </el-form-item>-->
-      <!-- <el-form-item>
-        <el-button type="primary">选择</el-button>
-      </el-form-item> -->
     </el-form>
 
     <!-- 图片导航 -->
@@ -37,18 +36,10 @@
       <div class="arrow arrow-left" @click="showMore('down')"></div>
       <div class="pic-container">
         <div class="pic-box" ref="picContainer">
-          <div class = 'pic' v-for = "(v, i) in imglist">
-            <img :src = "'data:img/jpg;base64,' + v"
-            @click="activePic('data:img/jpg;base64,' + v)">
+          <div class = 'pic' v-for = "v in imglist">
+            <img :src = "'data:img/jpg;base64,' + v.b64"
+            @click="activePic('data:img/jpg;base64,' + v.b64, v.filename)">
           </div>
-
-<!--          <div class="pic" v-for="(v, i) in pics" :key="i">-->
-<!--            <div-->
-<!--              class="info"-->
-<!--              :style="{ 'background-image': 'data:img/jpg;base64,' + v.cropImage }"-->
-<!--              @click="activePic(v.cropImage)"-->
-<!--            ></div>-->
-<!--          </div>-->
         </div>
       </div>
       <div class="arrow arrow-right" @click="showMore('up')"></div>
@@ -131,13 +122,14 @@ export default {
       username: localStorage.getItem('username'),
       formInline: {
         region: '',
-        radio: '全部'
+        radio: 'PascalVoc'
       },
       dataList: [],
 
       uuid: '0da9130',
       // 当前图片的信息，包含图片原本的高矮胖瘦尺寸
       currentInfo: {
+        currentFilename: '',
         currentBaseImage:
           '',
         rawW: 0,
@@ -150,26 +142,7 @@ export default {
       imglist: [],
 
       // *****************************
-      pics: [
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
-        // },
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50041/3365.jpg_wh1200.jpg'
-        // },
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
-        // },
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50098/1015.jpg_wh1200.jpg'
-        // },
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50050/5027.jpg_wh1200.jpg'
-        // },
-        // {
-        //   cropImage: 'https://seopic.699pic.com/photo/50140/6207.jpg_wh1200.jpg'
-        // }
-      ],
+      pics: [],
       active: 0, // 当前图片序号
       picTotal: 10, // 照片总数
 
@@ -197,34 +170,11 @@ export default {
         tagName: [{ required: true, message: '请输入', trigger: 'blur' }],
         tag: [{ required: true, message: '请输入', trigger: 'blur' }]
       },
-      //
-      // Labels: {
-      //   filename: '',
-      //   height: 0,
-      //   width: 0,
-      //   xmin: [],
-      //   xmax: [],
-      //   ymin: [],
-      //   ymax: [],
-      //   tag: []
-      // }
     }
   },
   create(){
   },
   mounted() {
-    // let parm = Qs.stringify({
-    //   'username': this.username,
-    //   // 'user_name': localStorage.getItem("username"),
-    // })
-    // console.log('mounted')
-    // console.log(parm)
-    // getImgList(parm).then(res => {
-    //   console.log(res.data.code)
-    //   this.imglist = res.data.data
-    //   console.log(this.imglist)
-    //
-    // })
     let parm = Qs.stringify(({'username': this.username}))
     const _this = this
     axios.post('http://127.0.0.1:8000/api/getUserTask', parm).then(
@@ -237,18 +187,6 @@ export default {
       }
     )
     console.log(this.dataList)
-
-
-    // console.log('mounted')
-    //   let parm = Qs.stringify({
-    //     'username': this.username,
-    //   })
-    //   axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
-    //     this.imglist = resp.data.data
-    //   })
-    //
-    // console.log(this.pics)
-
   },
   methods: {
     /**记录图片当前的大小和原始大小 data={rawW,rawH,currentW,currentH} */
@@ -282,9 +220,16 @@ export default {
         'username': this.username,
         'taskname': this.taskname
       })
+      console.log('getImg')
       axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
-        this.imglist = resp.data.data
+        // this.imglist = resp.data.base64
+        console.log(resp.data.filename)
+        for(let i = 0; i < resp.data.filename.length; i++) {
+          let parm = {filename: resp.data.filename[i], b64: resp.data.base64[i]}
+          this.imglist.push(parm)
+        }
       })
+      console.log(this.imglist)
     },
 
     createForm(formName) {
@@ -322,10 +267,7 @@ export default {
         ymax: [],
         tag: []
       }
-
       let data = this.$refs['aiPanel-editor'].getMarker().getData()
-
-      // var element = Qs.stringify({ 'username': this.loginForm.username, 'password': this.loginForm.password })
 
       this.allInfo = data
       console.log(this.allInfo)
@@ -374,8 +316,11 @@ export default {
         Labels.tag.push(tag)
       }
       console.log(Labels)
-      var parm = Qs.stringify({
-        'filename': Labels.filename,
+      console.log('file label')
+      console.log(this.currentInfo.currentFilename)
+      let parm = Qs.stringify({
+        'filename': this.currentInfo.currentFilename,
+        'type': this.formInline.radio,
         'width': Labels.width,
         'height': Labels.height,
         'xmin': Labels.xmin,
@@ -388,12 +333,6 @@ export default {
       axios.post('http://127.0.0.1:8000/api/label', parm).then(res => {
 
       })
-
-
-      // axios.put('http://127.0.0.1:8000/api/label', parm).then(res => {
-      //
-      // })
-
     },
 
     // 点击左右按钮显示更多
@@ -435,16 +374,20 @@ export default {
       })
     },
     /**得到当前点击图片*/
-    activePic(v) {
+    activePic(v, f) {
       console.log('active')
       this.currentInfo.currentBaseImage = v
       let im = new Image;
       im.src = v
+      console.log(f)
+      this.currentInfo.currentFilename = f
       this.imageInfo = {rawW: im.width, rawH: im.height}
+      console.log(this.currentInfo.currentFilename)
     },
 
     handleChange(label) {
       console.log(label)
+      this.formInline.radio=label
     }
   }
 }

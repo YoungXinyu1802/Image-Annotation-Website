@@ -91,15 +91,18 @@ def toCreateML(filename, xmin, ymin, xmax, ymax, tags):
     annotations = []
     for i in range(len(xmin)):
         label = tags[i]
-        x = (xmin[i] + xmax[i]) / 2
-        y = (ymin[i] + ymax[i]) / 2
-        width = xmax[i] - xmin[i]
-        height = ymax[i] - ymin[i]
+        x = (int(xmin[i]) + int(xmax[i])) / 2
+        y = (int(ymin[i]) + int(ymax[i])) / 2
+        width = int(xmax[i]) - int(xmin[i])
+        height = int(ymax[i]) - int(ymin[i])
         coordinates = dict(zip(['x', 'y', 'width', 'height'], [x, y, width, height]))
         anno = dict(zip(['label', 'coordinates'], [label, coordinates]))
         annotations.append(anno)
     createML = dict(zip(['image', 'annotations'], [image_name, annotations]))
     res = '[' + json.dumps(createML) + ']'
+    f = open("foo.json", "w")
+    f.write(res)
+    print(res)
     return res
 
 def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
@@ -171,6 +174,7 @@ def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
 @csrf_exempt
 def label(request):
     _filename = request.POST.get("filename")
+    _type = request.POST.get("type")
     _width = request.POST.get("width")
     _height = request.POST.get("height")
     _xmin = request.POST.getlist("xmin")
@@ -179,6 +183,7 @@ def label(request):
     _ymax = request.POST.getlist("ymax")
     _tags = request.POST.getlist("tags")
     print(_filename)
+    print(_type)
     print(_width)
     print(_height)
     print(_xmin)
@@ -187,7 +192,10 @@ def label(request):
     print(_ymax)
     print(_tags)
     info = 'yes'
-    toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags)
+    if(_type == 'PascalVoc'):
+        toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags)
+    if(_type == 'createML'):
+        toCreateML(_filename, _xmin, _ymin, _xmax, _ymax, _tags)
     return JsonResponse({'request': info})
 
 # 上传任务
@@ -285,17 +293,20 @@ def getImglist(request):
     taskname = 'newTask'
     imgs = models.Task.objects.filter(task_name=taskname).values('img_id')
     print(imgs)
+    filenames = []
     b64 = []
     for i in imgs:
         img = models.LabelImg.objects.get(id=i.get('img_id'))
-        print(img.img)
-        print(str(img.img))
+        url = str(img.img)
+        print(url)
+        filename = url[url.rfind('/') + 1 : len(url)]
+        print('filename: ' + filename)
         f = open(str(img.img), 'rb')
         res = f.read()
         s = base64.b64encode(res)
+        filenames.append(filename)
         b64.append(str(s)[2: len(str(s)) - 1])
-    print(b64)
-    return ok(b64)
+    return JsonResponse({'code': 0, 'filename': filenames, 'base64': b64})
 
 # 领取任务
 @csrf_exempt
