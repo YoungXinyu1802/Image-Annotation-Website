@@ -1,3 +1,5 @@
+import shutil
+
 from django.views.decorators.csrf import csrf_exempt
 from .import models
 import base64
@@ -41,7 +43,7 @@ def login(request):
 def createUserFolder(username):
     filename = ['database', 'task']
     for f in filename:
-        url = os.path.join(MEDIA_ROOT, username, f).replace('\\', '/')
+        url = os.path.join(MEDIA_ROOT, 'UserAdmin', username, f).replace('\\', '/')
         if not os.path.exists(url):
             print('create')
             os.makedirs(url)
@@ -86,7 +88,7 @@ def signup(request):
     date = {'flag': date_flag, 'msg': date_msg}
     return JsonResponse({'request': date})
 
-def toCreateML(filename, xmin, ymin, xmax, ymax, tags):
+def toCreateML(filename, xmin, ymin, xmax, ymax, tags, taskname):
     image_name = filename
     annotations = []
     for i in range(len(xmin)):
@@ -100,12 +102,16 @@ def toCreateML(filename, xmin, ymin, xmax, ymax, tags):
         annotations.append(anno)
     createML = dict(zip(['image', 'annotations'], [image_name, annotations]))
     res = '[' + json.dumps(createML) + ']'
-    f = open("foo.json", "w")
+    url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname, 'Annotations').replace('\\', '/')
+    print(url)
+    imgfile = url + '/' + filename.replace('.jpg', '.json')
+    print(imgfile)
+    f = open(imgfile, "w")
     f.write(res)
     print(res)
     return res
 
-def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
+def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags, taskname):
     # 创建一个annotion节点
     root = etree.Element('annotion')
     # 创建一个子节点folder，一定要指定父节点
@@ -166,14 +172,18 @@ def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags):
         child654 = etree.SubElement(child65, 'ymax')
         child654.text = str(i['ymax'])
 
+    url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname, 'Annotations').replace('\\', '/')
+    print(url)
+    imgfile = url + '/' + filename.replace('.jpg', '.xml')
     tree = etree.ElementTree(root)
-    tree.write('pascal.xml', pretty_print=True)
+    tree.write(imgfile, pretty_print=True)
 
 
 # 导出图片标签
 @csrf_exempt
 def label(request):
     _filename = request.POST.get("filename")
+    _taskname = request.POST.get("taskname")
     _type = request.POST.get("type")
     _width = request.POST.get("width")
     _height = request.POST.get("height")
@@ -183,6 +193,7 @@ def label(request):
     _ymax = request.POST.getlist("ymax")
     _tags = request.POST.getlist("tags")
     print(_filename)
+    print(_taskname)
     print(_type)
     print(_width)
     print(_height)
@@ -193,12 +204,12 @@ def label(request):
     print(_tags)
     info = 'yes'
     if(_type == 'PascalVoc'):
-        toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags)
+        toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags, _taskname)
     if(_type == 'createML'):
-        toCreateML(_filename, _xmin, _ymin, _xmax, _ymax, _tags)
+        toCreateML(_filename, _xmin, _ymin, _xmax, _ymax, _tags, _taskname)
     return JsonResponse({'request': info})
 
-# 上传任务
+# 上传图片
 @csrf_exempt
 def upload(request):
     print('get')
@@ -260,37 +271,58 @@ def createTask(request):
     print(username)
     imglist = request.POST.getlist("imglist")
     print(imglist)
+    task_url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname, 'Img').replace('\\', '/')
+    f = ['Img', 'Annotations']
+    for i in f:
+        url = os.path.join(task_url, i).replace('\\', '/')
+        if not os.path.exists(url):
+            os.makedirs(url)
+
+    dest_url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname).replace('\\', '/')
     for img in imglist:
-        img_dir= os.path.join(MEDIA_ROOT, username, 'database',img).replace('\\', '/')
+        img_dir=os.path.join(MEDIA_ROOT, 'UserAdmin', username, 'database', img).replace('\\', '/')
         print(img_dir)
         img_object = models.LabelImg.objects.get(img=img_dir)
         task = models.Task(publish_user_id = username, task_name = taskname, description=desc, img=img_object)
         task.save()
+        # 保存到task文件夹
+        img_dir = str(img_dir)
+        img_dest = os.path.join(dest_url, img).replace('\\', '/')
+        shutil.copy(img_dir, img_dest)
 
     return ok({})
 
 # 任务列表
 @csrf_exempt
 def getTasklist(request):
-    # username = request.POST.get('username')
-    # print(username)
-    data = models.Task.objects.all().values()
-    # print(data)
-    # data = models.Task.objects.values('task_name').distinct()
-    # data = models.Task.objects.filter(publish_user_id=username).values()
-    # print(data[0])
-    contents = list(data)
-    print(contents)
-    print(ok(contents))
-    return ok(contents)
+    data = models.Task.objects.values('task_name', 'status', 'description').distinct()
+    task_list = []
+    index = 1
+    for d in data:
+        t_taskname = d['task_name']
+        temp = models.Task.objects.filter(task_name=t_taskname).values()
+        obj = temp[0]
+        task_list.append({
+            "id" : index,
+            "task_name": d['task_name'],
+            "status": d['status'],
+            "description": d['description'],
+            "publish_user_id": obj['publish_user_id'],
+            "claim_user_id": obj['claim_user_id']
+        })
+        index += 1
+    print(task_list)
+    return ok(task_list)
 
 # 标注界面的图片
 @csrf_exempt
 def getImglist(request):
     username = request.POST.get('username')
-    database = request.POST.get('database')
+    # database = request.POST.get('database')
+    taskname = request.POST.get('taskname')
     print(username)
-    taskname = 'newTask'
+    print(taskname)
+    # taskname = 'newTask'
     imgs = models.Task.objects.filter(task_name=taskname).values('img_id')
     print(imgs)
     filenames = []
@@ -329,7 +361,7 @@ def getTaskImg(request):
     username = request.POST.get('username')
     database = request.POST.get('database')
     print(username)
-    url = os.path.join(MEDIA_ROOT, username, 'database').replace('\\', '/')
+    url = os.path.join(MEDIA_ROOT, 'UserAdmin', username, 'database').replace('\\', '/')
     print(url)
     imglist = os.listdir(url)
     imgNum = len(imglist)

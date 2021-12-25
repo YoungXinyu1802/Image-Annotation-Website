@@ -9,4 +9,16 @@
     <height>180</height>
   </size>
   <segmented>0</segmented>
+  <object>
+    <name>bee</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+      <xmin>192</xmin>
+      <ymin>38</ymin>
+      <xmax>641</xmax>
+      <ymax>108</ymax>
+    </bndbox>
+  </object>
 </annotion>

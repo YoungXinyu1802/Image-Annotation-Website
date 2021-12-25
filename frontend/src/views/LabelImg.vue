@@ -13,7 +13,7 @@
         <el-select v-model="formInline.region" placeholder="选择任务">
           <el-option
             :label="item.name"
-            :value="item.code"
+            :value="item.name"
             v-for="item in dataList"
           ></el-option>
         </el-select>
@@ -216,9 +216,11 @@ export default {
       done()
     },
     getImg(){
+      this.imglist = []
+      console.log(this.formInline.region)
       let parm = Qs.stringify({
         'username': this.username,
-        'taskname': this.taskname
+        'taskname': this.formInline.region
       })
       console.log('getImg')
       axios.post('http://127.0.0.1:8000/api/getImglist', parm).then(resp => {
@@ -319,6 +321,7 @@ export default {
       console.log('file label')
       console.log(this.currentInfo.currentFilename)
       let parm = Qs.stringify({
+        'taskname': this.formInline.region,
         'filename': this.currentInfo.currentFilename,
         'type': this.formInline.radio,
         'width': Labels.width,

@@ -23,7 +23,7 @@ class UserInfo(models.Model):
 def getURL(instance, filename):
     imgName = instance.publish_user.user_name
     print(imgName)
-    return MEDIA_ROOT + '/%s/database/%s' % (imgName, filename)
+    return MEDIA_ROOT + '/UserAdmin/%s/database/%s' % (imgName, filename)
 
 class LabelImg(models.Model):
     publish_user = models.ForeignKey(UserInfo, null=True, on_delete=models.CASCADE, related_name='user_img')
