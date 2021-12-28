@@ -4,44 +4,13 @@
       <template slot="hintName">任务列表</template>
       <template slot="hintInfo">
         <p>任务列表：显示当前所有任务及状态，可以领取任务</p>
-<!--        <p>地址：访问 <el-link type="success" href="https://element.eleme.cn/2.13/TableClassic.vue#/zh-CN/component/table" target="_blank">element-Table</el-link></p>-->
       </template>
     </Hints>
     <el-card shadow="always">
-<!--      &lt;!&ndash; 操作栏 &ndash;&gt;-->
-<!--      <div class="control-btns">-->
-<!--        <el-button type="primary" @click="handleCreate">新建数据</el-button>-->
-<!--        <el-button type="primary" @click="handleImport">导入数据</el-button>-->
-<!--        <el-button type="primary" @click="exportVisible = true">导出数据</el-button>-->
-<!--        <el-button type="danger" @click="batchDelete">批量删除</el-button>-->
-<!--      </div>-->
-<!--      &lt;!&ndash; 查询栏 &ndash;&gt;-->
-<!--      <el-form-->
-<!--        ref="searchForm"-->
-<!--        :inline="true"-->
-<!--        :model="listQuery"-->
-<!--        label-width="90px"-->
-<!--        class="search-form"-->
-<!--      >-->
-<!--        <el-form-item label="编号">-->
-<!--          <el-input v-model="listQuery.id" placeholder="编号" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="手机">-->
-<!--          <el-input v-model="listQuery.phone" placeholder="手机" />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="婚姻状况">-->
-<!--          <el-select v-model="listQuery.married" placeholder="婚姻状况">-->
-<!--            <el-option :value="0" label="单身" />-->
-<!--            <el-option :value="1" label="未婚" />-->
-<!--            <el-option :value="2" label="已婚" />-->
-<!--            <el-option :value="3" label="离异" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item>-->
-<!--          <el-button type="primary" @click="onSubmit">查询</el-button>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-      <!-- 表格栏 -->
+      <div class="control-btns">
+        <el-button type="primary" @click="createTask">创建任务</el-button>
+        <el-button @click="fetchData">刷新</el-button>
+      </div>
       <el-table
         ref="multipleTable"
         v-loading="listLoading"
@@ -66,24 +35,14 @@
 
         <el-table-column prop="status" label="任务状态" align="center" />
         <el-table-column prop="claim_user_id" label="领取者" align="center" />
-<!--        <el-table-column label="禁止编辑" align="center">-->
-<!--          <template slot-scope="scope">-->
-<!--            <el-switch v-model="scope.row.forbid" @change="stateChange(scope.row)" />-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--        <el-table-column prop="hobby" label="爱好" align="center" width="300" show-overflow-tooltip />-->
 
         <el-table-column label="操作" align="center" width="200">
           <template slot-scope="scope">
 
-
             <el-button type='primary' @click="claimTask(scope.$index, scope.row)">领取</el-button>
-            <!--            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页栏 -->
-      <Pagination :total="total" :page.sync="listQuery.currentPage" :limit.sync="listQuery.pageSize" @pagination="fetchData" />
       <!-- 新增/编辑 弹出栏 -->
       <el-dialog
         title="任务描述"
@@ -100,37 +59,6 @@
         >
             <el-input v-model="dialogForm.desc" />
         </el-form>
-      </el-dialog>
-      <!-- 导入数据 弹出栏 -->
-      <el-dialog
-        title="导入数据"
-        :visible.sync="importVisible"
-        width="20%"
-      >
-        <div class="upload-box">
-          <span>选择文件：</span>
-          <Upload :files-format="filesFormat">
-            <i class="vue-dsn-icon-upload" />上传文件
-          </Upload>
-        </div>
-        <div class="hints">TIP：请选择要导出数据的格式。</div>
-        <span slot="footer">
-          <el-button @click="cancleImport">取 消</el-button>
-          <el-button type="primary" @click="confirmImport">确 定</el-button>
-        </span>
-      </el-dialog>
-      <!-- 导出数据 弹出栏 -->
-      <el-dialog
-        title="导出数据"
-        :visible.sync="exportVisible"
-        width="30%"
-      >
-        <div class="export-data">
-          <el-button type="primary" @click="exportTable('xlsx')">EXCEL格式</el-button>
-          <el-button type="primary" @click="exportTable('csv')">CSV格式</el-button>
-          <el-button type="primary" @click="exportTable('txt')">TXT格式</el-button>
-        </div>
-        <div class="hints">TIP：请选择要导出数据的格式。</div>
       </el-dialog>
     </el-card>
   </div>
@@ -201,9 +129,9 @@ export default {
   created() {
     this.fetchData()
   },
-  // mounted(){
-  //   this.fetchData()
-  // },
+  mounted(){
+    this.fetchData()
+  },
   methods: {
     // 多选操作
     handleSelectionChange(val) {
@@ -216,47 +144,6 @@ export default {
       this.dialogForm.phone = undefined
       this.dialogForm.married = undefined
       this.dialogForm.hobby = []
-    },
-    // 编辑数据
-    handleEdit(index, row) {
-      console.log(index, row)
-      this.formVisible = true
-      this.dialogForm.desc = row.description
-      // this.dialogForm.phone = row.phone
-      // this.dialogForm.married = row.married
-      // this.dialogForm.hobby = row.hobby.split('、')
-    },
-    // 删除数据
-    handleDelete(index, row) {
-      console.log(index, row)
-      this.$confirm('此操作将删除选中数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 此处可添加--删除接口
-        // 删除成功调用fetchData方法更新列表
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
-    // 批量删除
-    batchDelete() {
-      if (this.multipleSelection.length < 1) {
-        this.$message({
-          message: '请先选择要删除的数据！',
-          type: 'warning'
-        })
-      } else {
-        this.handleDelete()
-      }
     },
     // 新增/编辑弹出框 关闭时操作
     handleClose() {
@@ -353,13 +240,8 @@ export default {
         this.exportVisible = false
       }
     },
-    // 列表中婚姻状况栏，状态值改变时，调用
-    selectChange(row) {
-      // 此处添加后台接口，成功后调用fetchData方法更新列表
-    },
-    // 列表中禁止编辑栏，状态值改变时，调用
-    stateChange(row) {
-      // 此处添加后台接口，成功后调用fetchData方法更新列表
+    createTask(){
+      this.$router.push('/createTask')
     }
   }
 }
