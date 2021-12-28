@@ -55,20 +55,7 @@
           </div>
         </el-card>
       </div>
-
     </div>
-<!--    <el-row class="date-box" :gutter="20">-->
-<!--      <el-col :span="12">-->
-<!--        <el-card shadow="always" :body-style="{padding: '0px'}">-->
-<!--          <ChartsBar :title="title" :data="commonChartsData" class="data-chart" />-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-<!--      <el-col :span="12">-->
-<!--        <el-card shadow="always" :body-style="{padding: '0px'}">-->
-<!--          <ChartsLine :title="title" :data="commonChartsData" class="data-chart" />-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-<!--    </el-row>-->
   </div>
 </template>
 
@@ -147,31 +134,6 @@ export default {
           }
         }
       }
-    }
-  }
-  .date-box{
-    margin-bottom: 20px;
-  }
-  .data-desc{
-    width: 100%;
-    height: 320px;
-  }
-  .data-chart{
-    width: 100%;
-    height: 400px;
-  }
-  .data-lang-box{
-    padding: 10px 25px;
-    box-sizing: border-box;
-    .data-lang-title{
-      line-height: 32px;
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .data-lang-item{
-      height: 48px;
-      line-height: 20px;
     }
   }
   .card{
