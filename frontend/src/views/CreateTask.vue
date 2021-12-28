@@ -10,8 +10,8 @@
       <div slot="header" class="el-card-header">
         <h2 class="login-title">任务信息</h2>
       </div>
-    <el-form ref="form" :model="task" label-width="80px">
-      <el-form-item label="任务名称">
+    <el-form ref="task" :model="task" :rules="taskRules" label-width="80px">
+      <el-form-item prop="name" label="任务名称">
         <el-input
           v-model="task.name"
           maxlength="10"
@@ -20,7 +20,7 @@
         >
         </el-input>
       </el-form-item>
-      <el-form-item label="任务描述">
+      <el-form-item prop="desc" label="任务描述">
         <el-input
           type="textarea"
           v-model="task.desc"
@@ -30,6 +30,16 @@
       </el-form-item>
       <el-form-item label = "任务图片">
         <el-button type="text" @click="dialogTableVisible = true">请选择图片</el-button>
+      </el-form-item>
+      <el-form-item label = "图片预览">
+          <div class = 'pic' v-for = "v in checkList">
+            <img :src = "'data:img/jpg;base64,' + v.b64" alt="">
+          </div>
+
+<!--        <el-checkbox v-for="v in imglist" :label="v.filename" :key="v.filename">-->
+<!--          {{v.filename}}-->
+<!--          <div> <img :src = "'data:img/jpg;base64,' + v.base64" alt="" class="img"></div>-->
+<!--        </el-checkbox>-->
       </el-form-item>
 
       <el-form-item>
@@ -75,9 +85,6 @@ export default {
         username: localStorage.getItem('username'),
         task: {
           name: '',
-          type: [],
-          dynamicTags: ['标签一', '标签二', '标签三'],
-          resource: '',
           desc: '',
         },
 
@@ -89,17 +96,16 @@ export default {
 
         dialogTableVisible: false,
         dialogFormVisible: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+
+        taskRules: {
+          name: [
+            { required: true, trigger: 'blur', message: '请输入任务名' },
+          ],
+          desc: [
+            { required: true, trigger: 'blur', message: '请输入任务描述' },
+          ],
+        }
       };
     },
 
@@ -133,7 +139,9 @@ export default {
         this.multipleSelection = val
       },
       onSubmit() {
-        console.log('submit!');
+        this.$refs.task.validate(valid => {
+          if(valid){
+         console.log('submit!');
         console.log(this.username)
         console.log(this.checkList)
 
@@ -145,9 +153,20 @@ export default {
         }, {indices: false})
 
         axios.post('http://127.0.0.1:8000/api/createTask', parm).then(resp => {
-
+          if(resp.data.code === 0){
+            this.$message({
+              message: '创建成功',
+              type: 'success'
+            })
+          }
+          else{
+            this.$message.error('任务名重复，请重新输入')
+          }
           }
         )
+          }
+        })
+
       },
 
       handleClose(tag) {
@@ -180,12 +199,6 @@ export default {
       submitUpload() {
         console.log('submit!');
         console.log(this.username)
-        // let newTask = new FormData();
-        // newTask.append('name', this.task.name);
-        // newTask.append('type', this.task.type);
-        // newTask.append('dynamicTags', this.task.dynamicTags);
-        // newTask.append('resource', this.task.resource);
-        // newTask.append('imgs', this.task.imgs);
         let newTask = {
           name: '',
           type: [],

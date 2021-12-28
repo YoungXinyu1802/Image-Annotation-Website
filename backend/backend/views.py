@@ -10,11 +10,15 @@ from django.core import signing
 import os
 import json
 from pathlib import Path
+from django.db.models import Q
+
 # from models import User
 # from models import Goods
 MEDIA_ROOT = os.path.join(Path(__file__).resolve().parent.parent.parent, 'backend/Admin')
 def ok(data: object):
     return JsonResponse({'code': 0, 'message': '操作成功', 'data': data})
+def err(data: object):
+    return JsonResponse({'code': 1, 'message': '操作失败', 'data': data})
 
 #登录验证
 @csrf_exempt
@@ -267,11 +271,14 @@ def createTask(request):
     print(username)
     # dynamicTags = request.POST.get("dynamicTags")
     taskname = request.POST.get("taskname")
+    task = models.Task.objects.filter(Q(task_name=taskname) & Q(publish_user_id=username))
+    if len(task) != 0:
+        return err({})
     desc = request.POST.get("desc")
     print(username)
     imglist = request.POST.getlist("imglist")
     print(imglist)
-    task_url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname, 'Img').replace('\\', '/')
+    task_url = os.path.join(MEDIA_ROOT, 'TaskAdmin', taskname).replace('\\', '/')
     f = ['Img', 'Annotations']
     for i in f:
         url = os.path.join(task_url, i).replace('\\', '/')
@@ -287,7 +294,7 @@ def createTask(request):
         task.save()
         # 保存到task文件夹
         img_dir = str(img_dir)
-        img_dest = os.path.join(dest_url, img).replace('\\', '/')
+        img_dest = os.path.join(dest_url, 'Img', img).replace('\\', '/')
         shutil.copy(img_dir, img_dest)
 
     return ok({})

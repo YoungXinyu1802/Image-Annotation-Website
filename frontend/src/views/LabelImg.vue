@@ -20,7 +20,7 @@
         <el-button type="primary" style="margin-left: 20px" @click="getImg()">选择</el-button>
       </el-form-item>
 
-      <el-form-item label="选择数据集：">
+      <el-form-item label="选择导出格式：">
        <el-radio-group v-model="formInline.radio" @change="handleChange">
           <el-radio-button label="PascalVoc"></el-radio-button>
           <el-radio-button label="createML"></el-radio-button>

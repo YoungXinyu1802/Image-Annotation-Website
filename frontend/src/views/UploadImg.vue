@@ -1,10 +1,9 @@
 <template>
   <div class="image-cropper-wrapper">
     <Hints>
-      <template slot="hintName">图片裁剪插件</template>
+      <template slot="hintName">图片上传</template>
       <template slot="hintInfo">
-        <p>Vue-Cropper：一个优雅的图片裁剪插件，可实现图片裁剪、图片生成等功能，并支持生成png、jpeg、webp等图片格式</p>
-        <p>github地址：访问 <el-link type="success" href="https://github.com/xyxiao001/vue-cropper" target="_blank">Vue-Cropper</el-link></p>
+        <p>选择本地图片上传,图片格式为jpg,大小不能超过5M</p>
       </template>
     </Hints>
    <el-card shadow="always">
@@ -12,9 +11,9 @@
         <h2 class="login-title">上传图片</h2>
       </div>
      <el-form>
-       <el-form-item label="数据集名称">
-         <el-input v-model="database" placeholder="请输入内容" class = "el-input"></el-input>
-       </el-form-item>
+<!--       <el-form-item label="数据集名称">-->
+<!--         <el-input v-model="database" placeholder="请输入内容" class = "el-input"></el-input>-->
+<!--       </el-form-item>-->
       <el-upload
         name = 'file'
         ref="upload"
@@ -23,6 +22,8 @@
         list-type="picture-card"
         :before-upload="beforeAvatarUpload"
         multiple
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
         :auto-upload="false"
       >
           <i slot="default" class="el-icon-plus"></i>
@@ -31,28 +32,6 @@
               class="el-upload-list__item-thumbnail"
               :src="file.url" alt=""
             >
-            <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)"
-              >
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleDownload(file)"
-              >
-                <i class="el-icon-download"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)"
-              >
-                <i class="el-icon-delete"></i>
-              </span>
-            </span>
           </div>
       </el-upload>
       <el-dialog :visible.sync="dialogVisible">
@@ -101,13 +80,34 @@ export default {
         }
       })
     },
+      handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+      beforeRemove(file, fileList) {
+        return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+
+      // handleRemove(file) {
+      //     console.log(file);
+      // },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt5M = file.size / 1024 / 1024 < 5;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt5M) {
+          this.$message.error('上传头像图片大小不能超过 5MB!');
+        }
+        return isJPG && isLt5M;
+      },
+
       submitUpload() {
         console.log('submit!');
         console.log(this.username)
         this.$refs.upload.submit()
       },
-
-
   }
 }
 </script>
