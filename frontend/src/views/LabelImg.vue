@@ -3,12 +3,28 @@
     <Hints>
       <template slot="hintName">图片标注</template>
       <template slot="hintInfo">
-        <p>标注图片并导出数据</p>
+        <p>标注图片并导出数据, 可以新建标签, 标签需要为英文</p>
       </template>
     </Hints>
 
-      <div>
-    <el-form :inline="true" :model="formInline">
+    <el-row :gutter="10" class="tagList">
+      <el-col :span="16">
+        <el-card shadow="always" class = "el-card">
+          <div slot="header" class="title">标注区域</div>
+        <ui-marker
+          ref="aiPanel-editor"
+          class="ai-observer"
+          :uniqueKey="uuid"
+          :ratio="16 / 9"
+          :imgUrl="currentInfo.currentBaseImage"
+          @vmarker:onImageLoad="onImageLoad"
+        ></ui-marker>
+        </el-card>
+      </el-col>
+      <el-col :span="8">
+        <el-card shadow="always" class = "el-card">
+          <div slot="header" class="title">工具栏</div>
+    <el-form :model="formInline">
       <el-form-item label="任务：">
         <el-select v-model="formInline.region" placeholder="选择任务">
           <el-option
@@ -26,78 +42,44 @@
           <el-radio-button label="createML"></el-radio-button>
         </el-radio-group>
       </el-form-item>
-<!--      <el-form-item>-->
-<!--        <el-button type="primary">选择</el-button>-->
-<!--      </el-form-item>-->
+      <el-form-item label="标签">
+        <el-tag
+          :key="tag"
+          v-for="tag in dynamicTags"
+          closable
+          :disable-transitions="false"
+          @click="setTag(tag)"
+          @close="handleClose(tag)">
+          {{tag}}
+        </el-tag>
+        <el-input
+          class="input-new-tag"
+          v-if="inputVisible"
+          v-model="inputValue"
+          ref="saveTagInput"
+          size="small"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        >
+        </el-input>
+        <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-carousel trigger="click" height="150px" autoplay="false" class="carousel">
+          <el-carousel-item v-for = "v in imglist">
+            <img :src = "'data:img/jpg;base64,' + v.b64"
+                @click="activePic('data:img/jpg;base64,' + v.b64, v.filename)" alt="">
+          </el-carousel-item>
+        </el-carousel>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="submitForm" type="primary">提交</el-button>
+      </el-form-item>
     </el-form>
 
-    <!-- 图片导航 -->
-    <div class="pics">
-      <div class="arrow arrow-left" @click="showMore('down')"></div>
-      <div class="pic-container">
-        <div class="pic-box" ref="picContainer">
-          <div class = 'pic' v-for = "v in imglist">
-            <img :src = "'data:img/jpg;base64,' + v.b64"
-            @click="activePic('data:img/jpg;base64,' + v.b64, v.filename)">
-          </div>
-        </div>
-      </div>
-      <div class="arrow arrow-right" @click="showMore('up')"></div>
-    </div>
-
-    <el-row :gutter="10" class="tagList">
-      <el-col :span="18">
-        <ui-marker
-          ref="aiPanel-editor"
-          class="ai-observer"
-          :uniqueKey="uuid"
-          :ratio="16 / 9"
-          :imgUrl="currentInfo.currentBaseImage"
-          @vmarker:onImageLoad="onImageLoad"
-        ></ui-marker>
-      </el-col>
-      <el-col :span="6">
-        <div class="title">标签</div>
-        <div class="tags" v-for="(v, i) in tags" :key="i">
-          <el-tag size="small" @click="setTag(v)">
-            {{ v.tagName }}
-          </el-tag>
-          <i class="el-icon-delete" @click="delTag(i)"></i>
-        </div>
-        <el-row>
-          <el-button type="success" class="handleButton" @click="addTag">
-            添加标签
-          </el-button>
-        </el-row>
-        <el-button type="primary" class="handleButton" @click="submitForm">
-          提交标注
-        </el-button>
+        </el-card>
       </el-col>
     </el-row>
-
-    <!-- 添加标签 dialog -->
-    <el-dialog
-      width="30%"
-      title="添加标签"
-      :visible.sync="innerVisible"
-      :before-close="beforeClose"
-    >
-      <el-form ref="innerForm" :model="innerForm" :rules="tep_rules">
-        <el-form-item label="标签名称：" prop="tagName">
-          <el-input v-model="innerForm.tagName" />
-        </el-form-item>
-        <el-form-item label="标签编码：" prop="tag">
-          <el-input v-model="innerForm.tag" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="close">取 消</el-button>
-        <el-button type="primary" @click="createForm('innerForm')">
-          确 定
-        </el-button>
-      </div>
-    </el-dialog>
-  </div>
   </div>
 </template>
 
@@ -119,6 +101,9 @@ export default {
   components: {'ui-marker': AIMarker, Hints, ElementDrr, TextSetting},
   data() {
     return {
+      dynamicTags: [],
+              inputVisible: false,
+        inputValue: '',
       username: localStorage.getItem('username'),
       formInline: {
         region: '',
@@ -233,28 +218,6 @@ export default {
       })
       console.log(this.imglist)
     },
-
-    createForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          for (let index in this.tags) {
-            let item = this.tags[index]
-            if (
-              item.tagName === this.innerForm.tagName ||
-              item.tag === this.innerForm.tag
-            ) {
-              this.$message.warning('标签名或标签值已存在，请重新输入')
-              return
-            }
-          }
-          this.tags.push({
-            tagName: this.innerForm.tagName,
-            tag: this.innerForm.tag
-          })
-          this.innerVisible = false
-        }
-      })
-    },
     /**
      * 完成标记，提交标记集合
      */
@@ -334,36 +297,17 @@ export default {
       }, {indices: false})
 
       axios.post('http://127.0.0.1:8000/api/label', parm).then(res => {
+        console.log(res.data)
+        if(res.data.code === 0){
+          this.$message.success("提交成功")
+        }
+        else{
+          this.$message.error("提交失败")
+        }
 
       })
     },
 
-    // 点击左右按钮显示更多
-    showMore(v) {
-      let el = this.$refs.picContainer
-      let percent = (this.active / this.pics.length) * 100
-      if (v == 'up') {
-        this.active++
-        if (this.active >= this.picTotal - 3) {
-          // 最后4张图
-          this.active = this.pics.length - 3
-          return
-        }
-        if (
-          this.pics.length - 3 == this.active &&
-          this.pics.length < this.picTotal
-        ) {
-          this.photoPageIndex++
-          this.getPhotos()
-          return
-        }
-      } else {
-        this.active--
-        if (this.active < 0) this.active = 0
-      }
-      el.style.transform =
-        'translateX(-' + (this.active / this.pics.length) * 100 + '%)'
-    },
 
     getPhotos() {
       return this.$nextTick(() => {
@@ -391,7 +335,27 @@ export default {
     handleChange(label) {
       console.log(label)
       this.formInline.radio=label
-    }
+    },
+      handleClose(tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.dynamicTags.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
+      }
+
   }
 }
 </script>
@@ -479,6 +443,12 @@ export default {
       .el-icon-delete {
         cursor: pointer;
       }
+    }
+    .carousel{
+      margin-top: 20px;
+    }
+    .el-card{
+      height: 530px;
     }
   }
 }

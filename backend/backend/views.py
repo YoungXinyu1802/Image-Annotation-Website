@@ -113,7 +113,7 @@ def toCreateML(filename, xmin, ymin, xmax, ymax, tags, taskname):
     f = open(imgfile, "w")
     f.write(res)
     print(res)
-    return res
+    return ok(res)
 
 def toVoc(filename, width, height, xmin, ymin, xmax, ymax, tags, taskname):
     # 创建一个annotion节点
@@ -211,7 +211,7 @@ def label(request):
         toVoc(_filename, _width, _height, _xmin, _ymin, _xmax, _ymax, _tags, _taskname)
     if(_type == 'createML'):
         toCreateML(_filename, _xmin, _ymin, _xmax, _ymax, _tags, _taskname)
-    return JsonResponse({'request': info})
+    return ok({})
 
 # 上传图片
 @csrf_exempt
