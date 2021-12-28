@@ -6,11 +6,12 @@
         <p>任务列表：显示当前所有任务及状态，可以领取任务</p>
       </template>
     </Hints>
-    <el-card shadow="always">
+    <el-card shadow="always" class="el-card">
       <div class="control-btns">
         <el-button type="primary" @click="createTask">创建任务</el-button>
         <el-button @click="fetchData">刷新</el-button>
       </div>
+      <el-scrollbar style="height: 500px">
       <el-table
         ref="multipleTable"
         v-loading="listLoading"
@@ -20,7 +21,6 @@
         size="medium"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="60" />
         <el-table-column prop="id" label="编号" align="center" width="120" sortable />
         <el-table-column prop="task_name" label="任务名" align="center">
         </el-table-column>
@@ -43,6 +43,7 @@
           </template>
         </el-table-column>
       </el-table>
+        </el-scrollbar>
       <!-- 新增/编辑 弹出栏 -->
       <el-dialog
         title="任务描述"
@@ -290,6 +291,9 @@ export default {
     font-size: 12px;
     color: #aaa;
     text-align: center;
+  }
+  .el-card{
+    height: 400px;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="login-wrapper" :style="'background-image:url('+ Background +')'">
     <div class="form-box">
       <div class="form-title">
-        <img src="../assets/img/login-logo.png" alt="icon" class="img">
+        <img src="../assets/img/Logo2.png" alt="icon" class="img">
         <h3 class="title">注册</h3>
 <!--        <p>数据集标注网站</p>-->
       </div>
