@@ -32,32 +32,41 @@
         <el-button type="text" @click="dialogTableVisible = true">请选择图片</el-button>
       </el-form-item>
       <el-form-item label = "图片预览">
-          <div class = 'pic' v-for = "v in checkList">
-            <img :src = "'data:img/jpg;base64,' + v.b64" alt="">
-          </div>
 
-<!--        <el-checkbox v-for="v in imglist" :label="v.filename" :key="v.filename">-->
-<!--          {{v.filename}}-->
-<!--          <div> <img :src = "'data:img/jpg;base64,' + v.base64" alt="" class="img"></div>-->
-<!--        </el-checkbox>-->
+
+          <el-carousel :interval="4000" type="card" height="100px">
+            <el-carousel-item v-for="item in showList">
+              <img v-bind:src="'data:img/jpg;base64,' + item" alt="" class = img>
+            </el-carousel-item>
+          </el-carousel>
+
       </el-form-item>
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="resetInfo">取消</el-button>
       </el-form-item>
     </el-form>
     </el-card>
     <el-dialog title="选择图片" :visible.sync="dialogTableVisible" @click="showImg">
+      <el-scrollbar style="height: 300px">
+      <ul class="infinite-list" style="overflow:auto">
       <el-checkbox-group
         v-model="checkList"
       >
+
         <el-checkbox v-for="v in imglist" :label="v.filename" :key="v.filename">
           {{v.filename}}
-          <div> <img :src = "'data:img/jpg;base64,' + v.base64" alt="" class="img"></div>
+          <div>
+            <el-image
+              style="width: 100px; height: 100px"
+              :src="'data:img/jpg;base64,' + v.base64"
+              :fit="fit"></el-image>
+          </div>
         </el-checkbox>
       </el-checkbox-group>
-
+      </ul>
+        </el-scrollbar>
 
       <el-button type="primary" @click="selectImg">完成</el-button>
 
@@ -81,6 +90,7 @@ export default {
       return {
         imglist: [],
         checkList: [],
+        showList: [],
         multipleSelection: [],
         username: localStorage.getItem('username'),
         task: {
@@ -117,6 +127,18 @@ export default {
       selectImg(){
         console.log(this.checkList)
         this.dialogTableVisible = false
+        for (var i = 0; i < this.imglist.length; i++){
+          var item = this.imglist[i]
+          console.log(item)
+          for (var j = 0; j < this.checkList.length; j++){
+            if(item.filename === this.checkList[j]){
+              this.showList.push(item.base64)
+              break;
+            }
+          }
+        }
+        console.log('showlist')
+        console.log(this.showList)
       },
       showImg(){
         console.log('show')
@@ -236,6 +258,13 @@ export default {
       },
       handlePreview(file) {
         console.log(file);
+      },
+      resetInfo(){
+        this.imglist=[]
+        this.checkList=[]
+        this.showList=[]
+        this.task.name=''
+        this.task.desc=''
       }
 
     },
@@ -268,29 +297,9 @@ export default {
     width: 100px;
     height: 100px;
   }
-
-  //.form-list {
-  //  width: 45%;
-  //  margin: 0 auto;
-  //  .el-rate {
-  //    line-height: 2;
-  //  }
-  //  > .el-form-item {
-  //    margin-bottom: 22px;
-  //    .line {
-  //      text-align: center;
-  //    }
-  //    .tip-title {
-  //      text-align: right;
-  //      color: #606266;
-  //    }
-  //  }
-  //  .submit-box {
-  //    margin-top: 35px;
-  //    margin-left: 0;
-  //    text-align: center;
-  //  }
-  //}
+  .el-scrollbar_wrap {
+    overflow-x: hidden;
+  }
 }
 
 

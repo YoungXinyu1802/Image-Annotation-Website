@@ -8,7 +8,7 @@
     </Hints>
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-card shadow="always">
+        <el-card shadow="always" class="card">
           <div slot="header" class="title">视频区域</div>
           <div>
           <input type="file" @change="getBigectURL($event)" />
@@ -18,7 +18,7 @@
         </el-card>
       </el-col>
       <el-col :span="12">
-        <el-card shadow="always">
+        <el-card shadow="always" class="card">
           <div slot="header" class="title">提取区域</div>
         <div>
             <el-button type="primary" @click="cutPicture">
@@ -29,15 +29,11 @@
             </el-button>
         </div>
         <canvas id="myCanvas" width="343" height="200"></canvas>
-      <div class="box">
-        <ul class = 'ul'>
-          <li v-for="(item, i) in imgSrc" class = 'li'>
-            <img v-bind:src="item" alt="" class = img>
-          </li>
-        </ul>
-	    </div>
-
-
+          <el-carousel :interval="4000" type="card" height="200px">
+            <el-carousel-item v-for="(item, i) in imgSrc">
+              <img v-bind:src="item" alt="" class = img>
+            </el-carousel-item>
+          </el-carousel>
         </el-card>
       </el-col>
     </el-row>
@@ -60,13 +56,8 @@ export default {
   components: {Hints, ElementDrr, TextSetting},
   data() {
     return {
-      // videoSrc: 'https://cdn.jsdelivr.net/gh/baimingxuan/media-store/videos/houlang.mp4',
       username: localStorage.getItem('username'),
       videoSrc:'',
-      // videoSrc: require("../../assets/video/video.mp4"),
-      // elements: [], // 叠加组件数组
-      // activeEle: {}, // 当前图片上聚焦的叠加组件
-      // eleNum: 0,
       imgSrc: []
     }
   },
@@ -112,6 +103,9 @@ export default {
 
 <style lang="less">
 .video-mark-wrapper {
+  .card{
+    height: 530px
+  }
   .box-wrapper {
     display: flex;
     align-items: center;

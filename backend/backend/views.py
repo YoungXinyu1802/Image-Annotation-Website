@@ -239,6 +239,7 @@ def upload(request):
 
 @csrf_exempt
 def video2img(request):
+    print('video2img')
     imgsrc = request.POST.getlist("imgSrc")
     print(len(imgsrc))
     username = request.POST.get("username")
@@ -251,7 +252,7 @@ def video2img(request):
         result = image[1]
         image_data = base64.b64decode(result)
         image_name = str(int(time.strftime("%Y%m%d%H%M%S"))) + '_' + str(index)
-        image_url = os.path.join(MEDIA_ROOT, '%s.jpg' % image_name).replace(
+        image_url = os.path.join(MEDIA_ROOT, 'UserAdmin', username, 'database', '%s.jpg' % image_name).replace(
             '\\', '/')
         print(image_url)
         myfile = Path(image_url)
