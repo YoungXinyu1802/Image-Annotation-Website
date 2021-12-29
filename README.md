@@ -1,7 +1,10 @@
-# BS project ImmageAnnotation Web
+# BS project ImageAnnotation Web
 
 ## 文件目录
 ```shell
+├─Admin
+│  └─TaskAdmin
+│  └─UserAdmin
 ├─backend
 │  └─backend
 │  └─Admin
@@ -14,6 +17,8 @@
 │  └─src  
 │  └─test     
 ```
+- Admin: 存储任务、用户信息
+
 - backend: 后端文件夹 
   
   python django + MySQL
