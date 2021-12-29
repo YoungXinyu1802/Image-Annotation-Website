@@ -1,2 +1,2 @@
-# BS-project
- ImageAnnotation Web
+# Backend
+ 后端：python django

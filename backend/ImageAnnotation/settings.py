@@ -98,9 +98,9 @@ UPLOAD_FILE=os.path.join(BASE_DIR,'upload')#照片存放在根目录upload文件
 #跨域增加忽略
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8080'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:8080'
+# )
 
 CORS_ALLOW_METHODS = (
     'DELETE',
