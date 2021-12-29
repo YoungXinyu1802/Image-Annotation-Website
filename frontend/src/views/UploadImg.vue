@@ -55,6 +55,7 @@ export default {
   components: { Hints, VueCropper, UploadImage },
   data() {
     return {
+        valid: true,
         username: localStorage.getItem('username'),
         inputVisible: false,
         inputValue: '',
@@ -96,11 +97,12 @@ export default {
         const isLt5M = file.size / 1024 / 1024 < 5;
 
         if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+          this.$message.error('上传图片只能是 JPG 格式!');
         }
         if (!isLt5M) {
-          this.$message.error('上传头像图片大小不能超过 5MB!');
+          this.$message.error('上传图片大小不能超过 5MB!');
         }
+        this.valid = isJPG && isLt5M
         return isJPG && isLt5M;
       },
 
@@ -108,8 +110,11 @@ export default {
         console.log('submit!');
         console.log(this.username)
         this.$refs.upload.submit()
-        this.$message.success('上传成功')
-        this.$refs.upload.clearFiles()
+        if(this.valid){
+          this.$message.success('上传成功')
+          this.$refs.upload.clearFiles()
+        }
+
       },
       resetImg() {
         this.$refs.upload.clearFiles()

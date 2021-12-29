@@ -180,6 +180,7 @@ export default {
               message: '创建成功',
               type: 'success'
             })
+            this.resetInfo()
           }
           else{
             this.$message.error('任务名重复，请重新输入')

@@ -58,7 +58,7 @@
           :rules="formRules"
           label-width="100px"
         >
-            <el-input v-model="dialogForm.desc" />
+            <el-input :placeholder="dialogForm.desc"  :disabled="true" />
         </el-form>
       </el-dialog>
     </el-card>
@@ -120,11 +120,6 @@ export default {
       // 防止多次连续提交表单
       isSubmit: false,
       // 导入数据 弹出框显示/隐藏
-      importVisible: false,
-      // 导出文件格式
-      filesFormat: '.txt, .csv, .xls, .xlsx',
-      // 导出数据 弹出框显示/隐藏
-      exportVisible: false
     }
   },
   created() {
@@ -134,22 +129,11 @@ export default {
     this.fetchData()
   },
   methods: {
-    // 多选操作
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    // 新建数据
-    handleCreate() {
+    handleEdit(index, row) {
+      console.log(index, row)
       this.formVisible = true
-      this.dialogForm.name = undefined
-      this.dialogForm.phone = undefined
-      this.dialogForm.married = undefined
-      this.dialogForm.hobby = []
-    },
-    // 新增/编辑弹出框 关闭时操作
-    handleClose() {
-      this.formVisible = false
-      this.$refs.dialogForm.resetFields()
+      this.dialogForm.name = row.name
+      this.dialogForm.desc = row.description
     },
     // 获取数据列表
     fetchData() {
