@@ -27,6 +27,9 @@
             <el-button type="primary" @click="commit">
                 提交
             </el-button>
+            <el-button @click="cancel">
+                取消
+            </el-button>
         </div>
         <canvas id="myCanvas" width="343" height="200"></canvas>
           <el-carousel :interval="4000" type="card" height="200px">
@@ -92,9 +95,12 @@ export default {
       }, {indices: false})
 
       axios.post('http://127.0.0.1:8000/api/video2img', parm).then(res => {
-
+        this.$message.success('上传成功')
       })
 
+    },
+    cancel(){
+      this.imgSrc = []
     }
 
   }

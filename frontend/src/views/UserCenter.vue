@@ -1,43 +1,25 @@
 <template>
   <div class="user-center-wrapper clear-fix">
     <el-card shadow="always" :body-style="{padding: '50px'}">
-      <div class="user-avatar">
-        <img src="../assets/img/avatar.png" alt="avatar">
-      </div>
-      <ul class="user-info">
-        <li>
-          <label>用户名：</label>
-          <span>{{ this.userInfo.username }}</span>
-        </li>
-        <li>
-          <label>邮箱：</label>
-          <span>{{ this.userInfo.email }}</span>
-        </li>
-<!--        <li>-->
-<!--          <label>角色：</label>-->
-<!--          <span>{{ userInfo.roles }}</span>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <label>昵称：</label>-->
-<!--          <span>{{ userInfo.nickname }}</span>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <label>电话号码：</label>-->
-<!--          <span>{{ userInfo.phone }}</span>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <label>邮箱：</label>-->
-<!--          <span>{{ userInfo.email }}</span>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <label>创建时间：</label>-->
-<!--          <span>{{ userInfo.createtime }}</span>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <label>更新时间：</label>-->
-<!--          <span>{{ userInfo.updatetime }}</span>-->
-<!--        </li>-->
-      </ul>
+      <img src="../assets/img/Home.png" alt="icon" class="img">
+      <el-row class="row">
+        <el-col :span="10">
+          <div class="user-avatar">
+            <img src="../assets/img/avatar.png" alt="avatar">
+          </div>
+        </el-col>
+        <el-col :span="14">
+          <el-form label-width="100px">
+            <el-form-item label="用户名">
+              <el-input :placeholder="this.userInfo.username" :disabled="true" style="width:200px"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+              <el-input :placeholder="this.userInfo.email" :disabled="true" style="width:200px"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+
     </el-card>
   </div>
 </template>
@@ -62,10 +44,13 @@ export default {
 
 <style lang="less">
 .user-center-wrapper {
+  .row{
+    margin-top: 40px;
+  }
   .user-avatar {
-    float: left;
-    width: 150px;
-    height: 150px;
+    float: right;
+    width: 100px;
+    height: 100px;
   }
   .user-info {
     float: left;

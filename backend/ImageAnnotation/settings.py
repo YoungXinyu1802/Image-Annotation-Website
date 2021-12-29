@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
 
@@ -74,7 +74,7 @@ ROOT_URLCONF = 'ImageAnnotation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['frontend/dist']
+        'DIRS': [BASE_DIR / 'frontend/dist']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -143,7 +143,7 @@ WSGI_APPLICATION = 'ImageAnnotation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # 数据库的类型
-        'NAME': 'testdemo', #所使用的数据库的名字
+        'NAME': 'image_annotation', #所使用的数据库的名字
         'USER': 'root', #数据库服务器的用户
         'PASSWORD': '123456', #密码
         'HOST': '127.0.0.1', #主机

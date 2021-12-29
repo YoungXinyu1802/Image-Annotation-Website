@@ -3,7 +3,7 @@
     <Hints>
       <template slot="hintName">图片标注</template>
       <template slot="hintInfo">
-        <p>标注图片并导出数据, 可以新建标签, 标签需要为英文</p>
+        <p>标注图片并导出数据，可以新建标签，标签需要为英文</p>
       </template>
     </Hints>
 

@@ -3,7 +3,7 @@
     <Hints>
       <template slot="hintName">图片上传</template>
       <template slot="hintInfo">
-        <p>选择本地图片上传,图片格式为jpg,大小不能超过5M</p>
+        <p>选择本地图片上传，图片格式为jpg，大小不能超过5M</p>
       </template>
     </Hints>
    <el-card shadow="always">
@@ -39,7 +39,8 @@
       </el-dialog>
        </el-form>
     </el-card>
-    <el-button type="primary" class="submit-button" @click="submitUpload">创建</el-button>
+    <el-button type="primary" class="submit-button" @click="submitUpload">上传</el-button>
+    <el-button class="submit-button" @click="resetImg">取消</el-button>
 
   </div>
 </template>
@@ -107,7 +108,12 @@ export default {
         console.log('submit!');
         console.log(this.username)
         this.$refs.upload.submit()
+        this.$message.success('上传成功')
+        this.$refs.upload.clearFiles()
       },
+      resetImg() {
+        this.$refs.upload.clearFiles()
+      }
   }
 }
 </script>
